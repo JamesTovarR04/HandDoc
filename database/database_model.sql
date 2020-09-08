@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"id"	INTEGER,
 	"name"	TEXT NOT NULL,
 	"lastName"	TEXT NOT NULL,
+	"phone"		TEXT NOT NULL,
 	"personalIdentification"	INTEGER NOT NULL UNIQUE,
 	"email"	TEXT NOT NULL UNIQUE,
 	"loggedIn" INTEGER,

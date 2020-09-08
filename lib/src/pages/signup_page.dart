@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SingupPage extends StatefulWidget {
-  final route = 'singup/';
+class SignupPage extends StatefulWidget {
+  final route = 'signup/';
 
   @override
-  _SingupPageState createState() => new _SingupPageState();
+  _SignupPageState createState() => new _SignupPageState();
 }
 
-class _SingupPageState extends State<SingupPage>
+class _SignupPageState extends State<SignupPage>
     with SingleTickerProviderStateMixin {
   Animation<double> _sizeAnimation;
   AnimationController _controllerAnimation;
@@ -44,7 +44,10 @@ class _SingupPageState extends State<SingupPage>
   TextEditingController _controllerPass2 = new TextEditingController();
   TextEditingController _controllerName = new TextEditingController();
   TextEditingController _controllerLastName = new TextEditingController();
+  TextEditingController _controllerPersonalIdentification =
+      new TextEditingController();
   TextEditingController _controllerPhone = new TextEditingController();
+  TextEditingController _controllerDate = new TextEditingController();
 
   String _validateChain = '';
   //----------------------------------------------------------------------------
@@ -55,12 +58,14 @@ class _SingupPageState extends State<SingupPage>
   RegExp nameLastNameRegExp = new RegExp(r'^([a-zA-Z ñáéíóú]{2,60})$');
 
   RegExp phoneRegExp = new RegExp(r'^(\+57)?[ -]*(0|3)?([0-9]){10}$');
+  RegExp personalIdentificationRegExp = new RegExp(r'^[0-9]{6,10}$');
 
   String _name;
   String _lastName;
   String _phone;
   String _email;
   String _password;
+  String _date;
   String message = '';
 
   bool _showPassword = false;
@@ -188,303 +193,86 @@ class _SingupPageState extends State<SingupPage>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             SizedBox(height: 5.0),
-            TextFormField(
-              textCapitalization: TextCapitalization.words,
-              validator: (text) {
-                if (text.length == 0) {
-                  return "Este campo nombre es requerido.";
-                } else if (!nameLastNameRegExp.hasMatch(text)) {
-                  return "El formato para nombre no es correcto.";
-                }
-                return null;
-              },
-              keyboardType: TextInputType.text,
-              controller: _controllerName,
-              style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
-              maxLength: 50,
-              decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1.0),
-                ),
-                labelStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                ),
-                labelText: "Nombre",
-                hintText: "Escribe tu nombre",
-                counterText: '',
-                prefixIcon: Icon(
-                  Icons.account_circle,
-                  color: Colors.deepOrange,
-                ),
-              ),
-              onSaved: (text) => _name = text,
-            ),
+            _createNameEdit(),
             //------------------------------------------------------------
             SizedBox(height: 10.0),
-            TextFormField(
-              controller: _controllerLastName,
-              textCapitalization: TextCapitalization.words,
-              validator: (text) {
-                if (text.length == 0) {
-                  return "Este campo apellido es requerido.";
-                } else if (!nameLastNameRegExp.hasMatch(text)) {
-                  return "El formato para apellido no es correcto.";
-                }
-                return null;
-              },
-              keyboardType: TextInputType.text,
-              style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
-              maxLength: 50,
-              decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1.0),
-                ),
-                labelStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                ),
-                labelText: "Apellido",
-                hintText: "Escribe tu apellido",
-                counterText: '',
-                prefixIcon: Icon(
-                  Icons.arrow_right,
-                  color: Colors.deepOrange,
-                ),
-              ),
-              onSaved: (text) => _lastName = text,
-            ),
+            _createLastNameEdit(),
             //------------------------------------------------------------
             SizedBox(height: 10.0),
-            TextFormField(
-              textCapitalization: TextCapitalization.words,
-              validator: (text) {
-                if (text.length == 0) {
-                  return "Este campo teléfono es requerido.";
-                } else if (!phoneRegExp.hasMatch(text)) {
-                  return "El formato para teléfono no es correcto.";
-                }
-                return null;
-              },
-              keyboardType: TextInputType.phone,
-              controller: _controllerPhone,
-              style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
-              maxLength: 50,
-              decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1.0),
-                ),
-                labelStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                ),
-                labelText: "Teléfono",
-                hintText: "Escribe tu teléfono",
-                counterText: '',
-                prefixIcon: Icon(
-                  Icons.smartphone,
-                  color: Colors.deepOrange,
-                ),
-              ),
-              onSaved: (text) => _phone = text,
-            ),
+            _createPersonalIdentificationEdit(),
             //------------------------------------------------------------
             SizedBox(height: 10.0),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1.0,
-                  color: Colors.grey,
-                ),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(35.0),
-              ),
-              alignment: Alignment.center,
-              width: 100.0,
-              height: 65.0,
-              child: ListTile(
-                title: DropdownButton<String>(
-                  isExpanded: true,
-                  value: _btn1SelectedVal,
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 20.0,
-                  ),
-                  iconEnabledColor: Colors.deepOrange,
-                  icon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Icon(Icons.arrow_downward),
-                  ),
-                  iconSize: 24,
-                  elevation: 16,
-                  onChanged: (String newValue) {
-                    setState(() {
-                      _btn1SelectedVal = newValue;
-                    });
-                  },
-                  items: this._dropdownMenuItems,
-                ),
-              ),
-            ),
+            _createPhoneEdit(),
             //------------------------------------------------------------
             SizedBox(height: 10.0),
-            TextFormField(
-              controller: _controllerEmail,
-              style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
-              validator: (text) {
-                if (text.length == 0) {
-                  return "Este campo correo es requerido.";
-                } else if (!emailRegExp.hasMatch(text)) {
-                  return "El formato para correo no es correcto.";
-                }
-                return null;
-              },
-              keyboardType: TextInputType.emailAddress,
-              maxLength: 50,
-              decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1.0),
-                ),
-                labelStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                ),
-                hintText: 'Ingresa tu correo',
-                labelText: 'Correo',
-                counterText: '',
-                prefixIcon: Icon(Icons.email, color: Colors.deepOrange),
-              ),
-              onSaved: (text) => _email = text,
-            ),
+            _createDateEdit(context),
             //------------------------------------------------------------
             SizedBox(height: 10.0),
-            TextFormField(
-              controller: _controllerPass,
-              obscureText: !this._showPassword,
-              style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
-              validator: (text) {
-                if (text.length == 0) {
-                  return "Este campo contraseña es requerido.";
-                } else if (text.length <= 5) {
-                  return "Tu contraseña debe ser al menos de 5 caracteres.";
-                } else if (!contRegExp.hasMatch(text)) {
-                  return "El formato para contraseña no es correcto.";
-                }
-                return null;
-              },
-              keyboardType: TextInputType.text,
-              maxLength: 20,
-              decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1.0),
-                ),
-                labelStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                ),
-                hintText: 'Ingresa tu contraseña',
-                labelText: 'Contraseña',
-                counterText: '',
-                prefixIcon: Icon(Icons.vpn_key, color: Colors.deepOrange),
-                suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.remove_red_eye,
-                      color:
-                          this._showPassword ? Colors.deepOrange : Colors.grey,
-                    ),
-                    onPressed: () {
-                      setState(() => this._showPassword = !this._showPassword);
-                    }),
-              ),
-              onSaved: (text) => _password = text,
-            ),
+            _createEmailEdit(),
             //------------------------------------------------------------
             SizedBox(height: 10.0),
-            TextFormField(
-              controller: _controllerPass2,
-              obscureText: !this._showPassword2,
-              style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
-              validator: (text) {
-                if (text.length == 0) {
-                  return "Este campo contraseña es requerido.";
-                } else if (text.length <= 5) {
-                  return "Tu contraseña debe ser al menos de 5 caracteres.";
-                } else if (!contRegExp.hasMatch(text)) {
-                  return "El formato para contraseña no es correcto.";
-                }
-                return null;
-              },
-              keyboardType: TextInputType.text,
-              maxLength: 20,
-              decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1.0),
-                ),
-                labelStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                ),
-                labelText: "Confirmar Contraseña",
-                hintText: "Contraseña",
-                counterText: '',
-                prefixIcon: Icon(
-                  Icons.redo,
-                  color: Colors.deepOrange,
-                ),
-                suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.remove_red_eye,
-                      color:
-                          this._showPassword2 ? Colors.deepOrange : Colors.grey,
-                    ),
-                    onPressed: () {
-                      setState(
-                          () => this._showPassword2 = !this._showPassword2);
-                    }),
-              ),
-              onSaved: (text) => _password = text,
-            ),
+            _createPassEdit(),
+            //------------------------------------------------------------------
+            SizedBox(height: 10.0),
+            _createPass2Edit(),
           ],
         ),
       ),
     );
   }
 
-//------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
+  Widget _createDateEdit(BuildContext context) {
+    return TextFormField(
+      enableInteractiveSelection: false,
+      controller: _controllerDate,
+      style: TextStyle(fontSize: 20.0),
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        prefixIcon: Icon(
+          Icons.cake,
+          color: Colors.deepOrange,
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        hintText: "Fecha de nacimiento",
+      ),
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+        _selectDate(context);
+      },
+    );
+  }
+
+  _selectDate(BuildContext context) async {
+    DateTime picked = await showDatePicker(
+      context: context,
+      locale: Locale('es', 'ES'),
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1920),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null) {
+      setState(() {
+        _date = picked.toString();
+        _controllerDate.text = _date;
+      });
+    }
+  }
+
+  //------------------------------------------------------------------------------
   Widget _createPrivacyPolicies() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 50.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Column(
             children: <Widget>[
@@ -522,7 +310,7 @@ class _SingupPageState extends State<SingupPage>
     );
   }
 
-//------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   Widget _createButtonSignUp() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -549,6 +337,299 @@ class _SingupPageState extends State<SingupPage>
                 }
               },
       ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createLastNameEdit() {
+    return TextFormField(
+      controller: _controllerLastName,
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo apellido es requerido.";
+        } else if (!nameLastNameRegExp.hasMatch(text)) {
+          return "El formato para apellido no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.text,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Apellido",
+        hintText: "Escribe tu apellido",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.arrow_right,
+          color: Colors.deepOrange,
+        ),
+      ),
+      onSaved: (text) => _lastName = text,
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createPhoneEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo teléfono es requerido.";
+        } else if (!phoneRegExp.hasMatch(text)) {
+          return "El formato para teléfono no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerPhone,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Teléfono",
+        hintText: "Escribe tu teléfono",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.smartphone,
+          color: Colors.deepOrange,
+        ),
+      ),
+      onSaved: (text) => _phone = text,
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createPersonalIdentificationEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo #identificación es requerido.";
+        } else if (!personalIdentificationRegExp.hasMatch(text)) {
+          return "El formato para #identificación no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerPersonalIdentification,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "# Identificación",
+        hintText: "Escribe tu # Identificación",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.camera_front,
+          color: Colors.deepOrange,
+        ),
+      ),
+      onSaved: (text) => _phone = text,
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createNameEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo nombre es requerido.";
+        } else if (!nameLastNameRegExp.hasMatch(text)) {
+          return "El formato para nombre no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.text,
+      controller: _controllerName,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Nombre",
+        hintText: "Escribe tu nombre",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.account_circle,
+          color: Colors.deepOrange,
+        ),
+      ),
+      onSaved: (text) => _name = text,
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createEmailEdit() {
+    return TextFormField(
+      controller: _controllerEmail,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo correo es requerido.";
+        } else if (!emailRegExp.hasMatch(text)) {
+          return "El formato para correo no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.emailAddress,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        hintText: 'Ingresa tu correo',
+        labelText: 'Correo',
+        counterText: '',
+        prefixIcon: Icon(Icons.email, color: Colors.deepOrange),
+      ),
+      onSaved: (text) => _email = text,
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createPassEdit() {
+    return TextFormField(
+      controller: _controllerPass,
+      obscureText: !this._showPassword,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo contraseña es requerido.";
+        } else if (text.length <= 5) {
+          return "Tu contraseña debe ser al menos de 5 caracteres.";
+        } else if (!contRegExp.hasMatch(text)) {
+          return "El formato para contraseña no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.text,
+      maxLength: 20,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        hintText: 'Ingresa tu contraseña',
+        labelText: 'Contraseña',
+        counterText: '',
+        prefixIcon: Icon(Icons.vpn_key, color: Colors.deepOrange),
+        suffixIcon: IconButton(
+            icon: Icon(
+              Icons.remove_red_eye,
+              color: this._showPassword ? Colors.deepOrange : Colors.grey,
+            ),
+            onPressed: () {
+              setState(() => this._showPassword = !this._showPassword);
+            }),
+      ),
+      onSaved: (text) => _password = text,
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createPass2Edit() {
+    return TextFormField(
+      controller: _controllerPass2,
+      obscureText: !this._showPassword2,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo contraseña es requerido.";
+        } else if (text.length <= 5) {
+          return "Tu contraseña debe ser al menos de 5 caracteres.";
+        } else if (!contRegExp.hasMatch(text)) {
+          return "El formato para contraseña no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.text,
+      maxLength: 20,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Confirmar Contraseña",
+        hintText: "Contraseña",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.redo,
+          color: Colors.deepOrange,
+        ),
+        suffixIcon: IconButton(
+            icon: Icon(
+              Icons.remove_red_eye,
+              color: this._showPassword2 ? Colors.deepOrange : Colors.grey,
+            ),
+            onPressed: () {
+              setState(() => this._showPassword2 = !this._showPassword2);
+            }),
+      ),
+      onSaved: (text) => _password = text,
     );
   }
 }

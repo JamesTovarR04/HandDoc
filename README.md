@@ -1,6 +1,6 @@
-# hand_doc
+# HandDoc
 
-A new Flutter project.
+A mobile application to diagnose the type of disease and its possible recommended dose of medicine, in case it is a serious damage, it is suggested to go to the emergency room and avoid major mishaps.
 
 ## Getting Started
 

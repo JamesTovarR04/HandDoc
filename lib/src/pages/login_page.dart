@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:hand_doc/src/pages/signup_page.dart';
 
 //import 'package:flutter_svg/flutter_svg.dart';
 
@@ -326,7 +327,7 @@ class LoginPageState extends State<LoginPage>
             ),
           ),
           onTap: () {
-            //Navigator.pushNamed(context, SingupPage().route);
+            Navigator.pushNamed(context, SignupPage().route);
           },
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hand_doc/src/pages/login_page.dart';
 import 'package:hand_doc/src/routes/routes.dart';
 
@@ -8,6 +9,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: [
+        const Locale('en', 'US'),
+        const Locale('es', 'ES'),
+      ],
       initialRoute: LoginPage().route,
       routes: getApplicationRoutes(),
       theme: ThemeData(

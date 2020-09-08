@@ -4,6 +4,7 @@ class User {
   String lastName;
   int personalIdentification;
   int loggedIn;
+  String phone;
   String email;
   String password;
   String birthday;
@@ -16,6 +17,7 @@ class User {
     this.lastName,
     this.personalIdentification,
     this.loggedIn,
+    this.phone,
     this.email,
     this.password,
     this.birthday,
@@ -30,6 +32,7 @@ class User {
       lastName: json['lastName'],
       personalIdentification: json['personalIdentification'],
       loggedIn: json['loggedIn'],
+      phone: json['phone'],
       email: json['email'],
       password: json['password'],
       birthday: json['birthday'],
