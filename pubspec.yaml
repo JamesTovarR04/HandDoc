@@ -32,12 +32,24 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.7.3"
 
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path: "assets/data/image/logo.png"
+
+# To change icon shortcut write command
+# flutter pub run flutter_launcher_icons:main
+# -------------------------------------------
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
+  assets:
+    - assets/data/image/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
