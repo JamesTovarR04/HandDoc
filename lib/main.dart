@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hand_doc/src/pages/login_page.dart';
+import 'package:hand_doc/src/pages/splashscreen_page.dart';
 import 'package:hand_doc/src/routes/routes.dart';
 
 void main() => runApp(MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         const Locale('en', 'US'),
         const Locale('es', 'ES'),
       ],
-      initialRoute: LoginPage().route,
+      initialRoute: SplashScreen().route,
       routes: getApplicationRoutes(),
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
-
-//import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hand_doc/src/utils/access_util.dart';
 
 class LoginPage extends StatefulWidget {
   final route = 'login/';
@@ -20,18 +19,15 @@ class LoginPageState extends State<LoginPage>
   //----------------------------------------------------------------------------
   GlobalKey<FormState> _key = GlobalKey();
   //----------------------------------------------------------------------------
-  TextEditingController _controllerUser = new TextEditingController();
+  TextEditingController _controllerEmail = new TextEditingController();
   TextEditingController _controllerPassword = new TextEditingController();
   //----------------------------------------------------------------------------
-  String _validateChain = '';
 
   RegExp emailRegExp =
       new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
 
   RegExp contRegExp = new RegExp(r'^([1-zA-Z0-1@.\s]{1,255})$');
 
-  String _email;
-  String _password;
   String message = '';
 //------------------------------------------------------------------------------
 //Methods to define initial state of animations
@@ -168,7 +164,7 @@ class LoginPageState extends State<LoginPage>
           children: <Widget>[
             SizedBox(height: 5.0),
             TextFormField(
-              controller: _controllerUser,
+              controller: _controllerEmail,
               style: TextStyle(fontSize: 20.0),
               cursorColor: Colors.deepOrange,
               validator: (text) {
@@ -198,7 +194,6 @@ class LoginPageState extends State<LoginPage>
                 counterText: '',
                 prefixIcon: Icon(Icons.email, color: Colors.deepOrange),
               ),
-              onSaved: (text) => _email = text,
             ),
             //------------------------------------------------------------------
             SizedBox(height: 5.0),
@@ -245,7 +240,6 @@ class LoginPageState extends State<LoginPage>
                       setState(() => this._showPassword = !this._showPassword);
                     }),
               ),
-              onSaved: (text) => _password = text,
             ),
           ],
         ),
@@ -273,6 +267,8 @@ class LoginPageState extends State<LoginPage>
           if (_key.currentState.validate()) {
             _key.currentState.save();
             //Here a method is called to login
+            AccessUtil.loginUser(
+                context, _controllerEmail.text, _controllerPassword.text);
           }
         },
       ),
