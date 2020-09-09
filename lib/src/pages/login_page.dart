@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
-
-//import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hand_doc/src/utils/access_util.dart';
 
 class LoginPage extends StatefulWidget {
   final route = 'login/';
@@ -20,18 +19,15 @@ class LoginPageState extends State<LoginPage>
   //----------------------------------------------------------------------------
   GlobalKey<FormState> _key = GlobalKey();
   //----------------------------------------------------------------------------
-  TextEditingController _controllerUser = new TextEditingController();
+  TextEditingController _controllerEmail = new TextEditingController();
   TextEditingController _controllerPassword = new TextEditingController();
   //----------------------------------------------------------------------------
-  String _validateChain = '';
 
   RegExp emailRegExp =
       new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
 
   RegExp contRegExp = new RegExp(r'^([1-zA-Z0-1@.\s]{1,255})$');
 
-  String _email;
-  String _password;
   String message = '';
 //------------------------------------------------------------------------------
 //Methods to define initial state of animations
@@ -114,8 +110,16 @@ class LoginPageState extends State<LoginPage>
       height: 300.0,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [Colors.deepOrange, Colors.orange, Colors.deepOrange],
-            stops: [0.3, 1, 0.5],
+            colors: [
+              Theme.of(context).accentColor,
+              Theme.of(context).primaryColor,
+              Theme.of(context).accentColor
+            ],
+            stops: [
+              0.3,
+              1,
+              0.5
+            ],
             begin: FractionalOffset.topCenter,
             end: FractionalOffset.bottomCenter),
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(200.0)),
@@ -135,13 +139,9 @@ class LoginPageState extends State<LoginPage>
             Container(
               width: this._sizeAnimation.value,
               height: this._sizeAnimation.value,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(70.0)),
-                color: Colors.white,
-              ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Image.asset("assets/data/image/logo.png"),
+                child: Image.asset("assets/data/image/icon_white.png"),
               ),
             ),
             Padding(
@@ -163,14 +163,14 @@ class LoginPageState extends State<LoginPage>
     return Form(
       key: _key,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Column(
           children: <Widget>[
-            SizedBox(height: 5.0),
+            SizedBox(height: 2.0),
             TextFormField(
-              controller: _controllerUser,
+              controller: _controllerEmail,
               style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
+              cursorColor: Theme.of(context).primaryColor,
               validator: (text) {
                 if (text.length == 0) {
                   return "Este campo correo es requerido.";
@@ -184,8 +184,7 @@ class LoginPageState extends State<LoginPage>
               decoration: InputDecoration(
                 focusedBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1),
+                  borderSide: const BorderSide(color: Colors.green, width: 1),
                 ),
                 labelStyle: TextStyle(
                   color: Colors.grey,
@@ -196,17 +195,17 @@ class LoginPageState extends State<LoginPage>
                 hintText: 'Ingresa tu correo',
                 labelText: 'Correo',
                 counterText: '',
-                prefixIcon: Icon(Icons.email, color: Colors.deepOrange),
+                prefixIcon:
+                    Icon(Icons.email, color: Theme.of(context).primaryColor),
               ),
-              onSaved: (text) => _email = text,
             ),
             //------------------------------------------------------------------
-            SizedBox(height: 5.0),
+            SizedBox(height: 6.0),
             TextFormField(
               controller: _controllerPassword,
               obscureText: !this._showPassword,
               style: TextStyle(fontSize: 20.0),
-              cursorColor: Colors.deepOrange,
+              cursorColor: Theme.of(context).primaryColor,
               validator: (text) {
                 if (text.length == 0) {
                   return "Este campo contraseña es requerido.";
@@ -222,8 +221,7 @@ class LoginPageState extends State<LoginPage>
               decoration: InputDecoration(
                 focusedBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                  borderSide:
-                      const BorderSide(color: Colors.deepOrange, width: 1),
+                  borderSide: const BorderSide(color: Colors.green, width: 1),
                 ),
                 labelStyle: TextStyle(
                   color: Colors.grey,
@@ -234,18 +232,21 @@ class LoginPageState extends State<LoginPage>
                 hintText: 'Ingresa tu contraseña',
                 labelText: 'Contraseña',
                 counterText: '',
-                prefixIcon: Icon(Icons.vpn_key, color: Colors.deepOrange),
+                prefixIcon: Icon(
+                  Icons.vpn_key,
+                  color: Theme.of(context).primaryColor,
+                ),
                 suffixIcon: IconButton(
                     icon: Icon(
                       Icons.remove_red_eye,
-                      color:
-                          this._showPassword ? Colors.deepOrange : Colors.grey,
+                      color: this._showPassword
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
                     ),
                     onPressed: () {
                       setState(() => this._showPassword = !this._showPassword);
                     }),
               ),
-              onSaved: (text) => _password = text,
             ),
           ],
         ),
@@ -256,23 +257,25 @@ class LoginPageState extends State<LoginPage>
   //------------------------------------------------------------------------------
   Widget _createButtonLogin() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
       child: RaisedButton(
-        color: Colors.deepOrange,
+        color: Theme.of(context).primaryColor,
         elevation: 7.0,
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(18.0),
-          side: BorderSide(color: Colors.deepOrange),
+          //side: BorderSide(color: Colors.deepOrange),
         ),
         textColor: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(13.0),
-          child: Text("INICIA SESIÓN"),
+          child: Text("INICIAR SESIÓN"),
         ),
         onPressed: () {
           if (_key.currentState.validate()) {
             _key.currentState.save();
             //Here a method is called to login
+            AccessUtil.loginUser(
+                context, _controllerEmail.text, _controllerPassword.text);
           }
         },
       ),
@@ -285,7 +288,7 @@ class LoginPageState extends State<LoginPage>
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 12.0,
-          vertical: 12.0,
+          vertical: 9.0,
         ),
         child: Text(
           "¿Olvidaste tu contraseña?",
@@ -305,19 +308,19 @@ class LoginPageState extends State<LoginPage>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top: 30.0),
+          padding: EdgeInsets.only(top: 10.0),
           child: Text(
             "¿No tienes una cuenta?",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 15.0,
-              color: Colors.deepOrange,
+              color: Theme.of(context).accentColor,
             ),
           ),
         ),
         InkWell(
           child: Padding(
-            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+            padding: EdgeInsets.only(top: 8.0, bottom: 20.0),
             child: Text(
               "REGÍSTRATE",
               textAlign: TextAlign.center,

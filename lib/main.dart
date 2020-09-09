@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hand_doc/src/pages/start_screen.dart';
 import 'package:hand_doc/src/routes/routes.dart';
+import 'package:hand_doc/src/design/theme_light.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,10 +17,7 @@ class MyApp extends StatelessWidget {
       ],
       initialRoute: StartScreen().route,
       routes: getApplicationRoutes(),
-      theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: themeLight,
       debugShowCheckedModeBanner: false,
       title: 'HandDoc',
     );

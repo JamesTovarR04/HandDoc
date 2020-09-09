@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-//import 'package:hand_doc/src/pages/login_page.dart';
+import 'package:hand_doc/src/pages/login_page.dart';
 
 class StartScreen extends StatefulWidget {
   final route = '/';
@@ -13,9 +13,9 @@ class _StartScreenState extends State<StartScreen> {
   void initState() {
     super.initState();
 
-    /*Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 3), () {
       Navigator.pushNamed(context, LoginPage().route);
-    });*/
+    });
   }
 
   @override
@@ -24,7 +24,10 @@ class _StartScreenState extends State<StartScreen> {
       padding: const EdgeInsets.all(5.0),
       decoration: BoxDecoration(
         gradient: RadialGradient(
-          colors: [Colors.white, Colors.lightGreen],
+          colors: [
+            Theme.of(context).primaryColor,
+            Theme.of(context).accentColor
+          ],
           radius: 1.0,
         ),
       ),
@@ -32,14 +35,16 @@ class _StartScreenState extends State<StartScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/data/image/logo.png', height: 200.0),
+            Image.asset('assets/data/image/icon_white.png', height: 150.0),
+            SizedBox(height: 30.0),
             Text(
-              'Ejemplo',
+              "HandDoc",
               style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold),
-            )
+                color: Colors.white,
+                fontSize: 30.0,
+                //fontWeight: FontWeight.bold),
+              ),
+            ),
           ],
         ),
       ),

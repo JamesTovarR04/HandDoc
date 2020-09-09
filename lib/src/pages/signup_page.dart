@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hand_doc/src/classes/user.dart';
+import 'package:hand_doc/src/utils/access_util.dart';
 
 class SignupPage extends StatefulWidget {
   final route = 'signup/';
@@ -38,18 +40,20 @@ class _SignupPageState extends State<SignupPage>
   //----------------------------------------------------------------------------
   GlobalKey<FormState> _key = GlobalKey();
   //----------------------------------------------------------------------------
-  TextEditingController _controllerEmail = new TextEditingController();
-  TextEditingController _controllerPass = new TextEditingController();
 
-  TextEditingController _controllerPass2 = new TextEditingController();
   TextEditingController _controllerName = new TextEditingController();
   TextEditingController _controllerLastName = new TextEditingController();
   TextEditingController _controllerPersonalIdentification =
       new TextEditingController();
   TextEditingController _controllerPhone = new TextEditingController();
-  TextEditingController _controllerDate = new TextEditingController();
+  TextEditingController _controllerBirthday = new TextEditingController();
+  TextEditingController _controllerEmail = new TextEditingController();
+  TextEditingController _controllerWeight = new TextEditingController();
+  TextEditingController _controllerHeight = new TextEditingController();
+  TextEditingController _controllerPass = new TextEditingController();
+  TextEditingController _controllerPass2 = new TextEditingController();
 
-  String _validateChain = '';
+  User _user = new User();
   //----------------------------------------------------------------------------
   RegExp emailRegExp =
       new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
@@ -60,32 +64,12 @@ class _SignupPageState extends State<SignupPage>
   RegExp phoneRegExp = new RegExp(r'^(\+57)?[ -]*(0|3)?([0-9]){10}$');
   RegExp personalIdentificationRegExp = new RegExp(r'^[0-9]{6,10}$');
 
-  String _name;
-  String _lastName;
-  String _phone;
-  String _email;
-  String _password;
-  String _date;
   String message = '';
 
   bool _showPassword = false;
   bool _showPassword2 = false;
   bool _checkBoxVal = false;
   //----------------------------------------------------------------------------
-  //Map to save countries
-  static const menuItems = <String>['Selecciona País de Origen', 'Colombia'];
-
-  String _btn1SelectedVal = 'Selecciona País de Origen';
-
-  final List<DropdownMenuItem<String>> _dropdownMenuItems = menuItems
-      .map(
-        (String value) => DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        ),
-      )
-      .toList();
-
   @override
   Widget build(BuildContext context) {
     this._curve = CurvedAnimation(
@@ -194,22 +178,28 @@ class _SignupPageState extends State<SignupPage>
           children: <Widget>[
             SizedBox(height: 5.0),
             _createNameEdit(),
-            //------------------------------------------------------------
+            //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createLastNameEdit(),
-            //------------------------------------------------------------
+            //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createPersonalIdentificationEdit(),
-            //------------------------------------------------------------
+            //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createPhoneEdit(),
-            //------------------------------------------------------------
+            //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createDateEdit(context),
-            //------------------------------------------------------------
+            //------------------------------------------------------------------
+            SizedBox(height: 10.0),
+            _createWeightEdit(),
+            //------------------------------------------------------------------
+            SizedBox(height: 10.0),
+            _createHeightEdit(),
+            //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createEmailEdit(),
-            //------------------------------------------------------------
+            //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createPassEdit(),
             //------------------------------------------------------------------
@@ -225,7 +215,7 @@ class _SignupPageState extends State<SignupPage>
   Widget _createDateEdit(BuildContext context) {
     return TextFormField(
       enableInteractiveSelection: false,
-      controller: _controllerDate,
+      controller: _controllerBirthday,
       style: TextStyle(fontSize: 20.0),
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
@@ -261,8 +251,8 @@ class _SignupPageState extends State<SignupPage>
     );
     if (picked != null) {
       setState(() {
-        _date = picked.toString();
-        _controllerDate.text = _date;
+        _user.birthday = picked.toString();
+        _controllerBirthday.text = _user.birthday;
       });
     }
   }
@@ -331,9 +321,29 @@ class _SignupPageState extends State<SignupPage>
                 (_controllerPass2 != _controllerPass)
             ? null
             : () {
+                _user.name = _controllerName.text;
+                _user.lastName = _controllerLastName.text;
+                _user.phone = _controllerPhone.text;
+                _user.personalIdentification =
+                    int.parse(_controllerPersonalIdentification.text);
+                _user.email = _controllerEmail.text;
+                _user.password = _controllerPass.text;
+                _user.birthday = _controllerBirthday.text;
+                _user.height = double.parse(_controllerHeight.text);
+                _user.weight = double.parse(_controllerWeight.text);
+
                 if (_key.currentState.validate()) {
                   _key.currentState.save();
-                  message = 'Gracias \n $_email \n $_password';
+                  //------------------------------------------------------------
+                  if (AccessUtil.checkIfRegistered(
+                      _controllerPersonalIdentification.text)) {
+                    setState(() {
+                      message = "El usuario se encuentra registrado";
+                    });
+                  } else {
+                    AccessUtil.registerUser(context, _user);
+                  }
+                  //------------------------------------------------------------
                 }
               },
       ),
@@ -376,7 +386,6 @@ class _SignupPageState extends State<SignupPage>
           color: Colors.deepOrange,
         ),
       ),
-      onSaved: (text) => _lastName = text,
     );
   }
 
@@ -416,7 +425,84 @@ class _SignupPageState extends State<SignupPage>
           color: Colors.deepOrange,
         ),
       ),
-      onSaved: (text) => _phone = text,
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createWeightEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo peso es requerido.";
+        } else if (!phoneRegExp.hasMatch(text)) {
+          return "El formato para peso no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerWeight,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Peso",
+        hintText: "Escribe tu peso (Kg)",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.equalizer,
+          color: Colors.deepOrange,
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createHeightEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo altura es requerido.";
+        } else if (!phoneRegExp.hasMatch(text)) {
+          return "El formato para altura no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerWeight,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Colors.deepOrange,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Altura",
+        hintText: "Escribe tu altura (m)",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.equalizer,
+          color: Colors.deepOrange,
+        ),
+      ),
     );
   }
 
@@ -456,7 +542,6 @@ class _SignupPageState extends State<SignupPage>
           color: Colors.deepOrange,
         ),
       ),
-      onSaved: (text) => _phone = text,
     );
   }
 
@@ -496,7 +581,6 @@ class _SignupPageState extends State<SignupPage>
           color: Colors.deepOrange,
         ),
       ),
-      onSaved: (text) => _name = text,
     );
   }
 
@@ -532,7 +616,6 @@ class _SignupPageState extends State<SignupPage>
         counterText: '',
         prefixIcon: Icon(Icons.email, color: Colors.deepOrange),
       ),
-      onSaved: (text) => _email = text,
     );
   }
 
@@ -579,7 +662,6 @@ class _SignupPageState extends State<SignupPage>
               setState(() => this._showPassword = !this._showPassword);
             }),
       ),
-      onSaved: (text) => _password = text,
     );
   }
 
@@ -629,7 +711,6 @@ class _SignupPageState extends State<SignupPage>
               setState(() => this._showPassword2 = !this._showPassword2);
             }),
       ),
-      onSaved: (text) => _password = text,
     );
   }
 }

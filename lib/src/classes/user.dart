@@ -40,4 +40,20 @@ class User {
       weight: json['weight'],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'lastName': lastName,
+      'personalIdentification': personalIdentification,
+      'loggedIn': loggedIn,
+      'phone': phone,
+      'email': email,
+      'password': password,
+      'birthday': birthday,
+      'height': height,
+      'weight': weight,
+    };
+  }
 }
