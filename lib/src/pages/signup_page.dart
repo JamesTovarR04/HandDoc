@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hand_doc/src/design/animations.dart';
 import 'package:hand_doc/src/classes/user.dart';
+import 'package:hand_doc/src/providers/regularExpresions_provider.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
 class SignupPage extends StatefulWidget {
@@ -52,18 +54,12 @@ class _SignupPageState extends State<SignupPage>
   TextEditingController _controllerHeight = new TextEditingController();
   TextEditingController _controllerPass = new TextEditingController();
   TextEditingController _controllerPass2 = new TextEditingController();
+  //----------------------------------------------------------------------------
+  // Object regular expressions
+  RegularExpression regExp = new RegularExpression();
 
   User _user = new User();
   //----------------------------------------------------------------------------
-  RegExp emailRegExp =
-      new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
-  RegExp contRegExp = new RegExp(r'^([1-zA-Z0-1@.\s]{1,255})$');
-
-  RegExp nameLastNameRegExp = new RegExp(r'^([a-zA-Z ñáéíóú]{2,60})$');
-
-  RegExp phoneRegExp = new RegExp(r'^(\+57)?[ -]*(0|3)?([0-9]){10}$');
-  RegExp personalIdentificationRegExp = new RegExp(r'^[0-9]{6,10}$');
-
   String message = '';
 
   bool _showPassword = false;
@@ -91,7 +87,7 @@ class _SignupPageState extends State<SignupPage>
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _createUpBoxLogo(),
+        AnimationH.createUpBoxLogo(context, _sizeAnimation.value),
         SizedBox(height: 25.0),
         _createSignupText(),
         _createSignupForm(),
@@ -99,59 +95,6 @@ class _SignupPageState extends State<SignupPage>
         _createButtonSignUp(),
         SizedBox(height: 15.0),
       ],
-    );
-  }
-
-//------------------------------------------------------------------------------
-  Widget _createUpBoxLogo() {
-    return Container(
-      width: 550.0,
-      height: 300.0,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            colors: [Colors.deepOrange, Colors.orange, Colors.deepOrange],
-            stops: [0.3, 1, 0.5],
-            begin: FractionalOffset.topCenter,
-            end: FractionalOffset.bottomCenter),
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(200.0)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.8),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: this._sizeAnimation.value,
-              height: this._sizeAnimation.value,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(70.0)),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Image.asset(
-                  "assets/data/image/logo.png",
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "HandDoc",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 17.0),
-              ),
-            )
-          ],
-        ),
-      ),
     );
   }
 
@@ -220,11 +163,11 @@ class _SignupPageState extends State<SignupPage>
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
         ),
         prefixIcon: Icon(
           Icons.cake,
-          color: Colors.deepOrange,
+          color: Theme.of(context).primaryColor,
         ),
         labelStyle: TextStyle(
           color: Colors.grey,
@@ -308,7 +251,7 @@ class _SignupPageState extends State<SignupPage>
         elevation: 7.0,
         disabledColor: Colors.grey,
         disabledTextColor: Colors.white,
-        color: Colors.deepOrange,
+        color: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(18.0),
         ),
@@ -350,209 +293,14 @@ class _SignupPageState extends State<SignupPage>
     );
   }
 
-  //----------------------------------------------------------------------------
-  Widget _createLastNameEdit() {
-    return TextFormField(
-      controller: _controllerLastName,
-      textCapitalization: TextCapitalization.words,
-      validator: (text) {
-        if (text.length == 0) {
-          return "Este campo apellido es requerido.";
-        } else if (!nameLastNameRegExp.hasMatch(text)) {
-          return "El formato para apellido no es correcto.";
-        }
-        return null;
-      },
-      keyboardType: TextInputType.text,
-      style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
-      maxLength: 50,
-      decoration: InputDecoration(
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
-        ),
-        labelStyle: TextStyle(
-          color: Colors.grey,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-        ),
-        labelText: "Apellido",
-        hintText: "Escribe tu apellido",
-        counterText: '',
-        prefixIcon: Icon(
-          Icons.arrow_right,
-          color: Colors.deepOrange,
-        ),
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------
-  Widget _createPhoneEdit() {
-    return TextFormField(
-      textCapitalization: TextCapitalization.words,
-      validator: (text) {
-        if (text.length == 0) {
-          return "Este campo teléfono es requerido.";
-        } else if (!phoneRegExp.hasMatch(text)) {
-          return "El formato para teléfono no es correcto.";
-        }
-        return null;
-      },
-      keyboardType: TextInputType.phone,
-      controller: _controllerPhone,
-      style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
-      maxLength: 50,
-      decoration: InputDecoration(
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
-        ),
-        labelStyle: TextStyle(
-          color: Colors.grey,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-        ),
-        labelText: "Teléfono",
-        hintText: "Escribe tu teléfono",
-        counterText: '',
-        prefixIcon: Icon(
-          Icons.smartphone,
-          color: Colors.deepOrange,
-        ),
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------
-  Widget _createWeightEdit() {
-    return TextFormField(
-      textCapitalization: TextCapitalization.words,
-      validator: (text) {
-        if (text.length == 0) {
-          return "Este campo peso es requerido.";
-        } else if (!phoneRegExp.hasMatch(text)) {
-          return "El formato para peso no es correcto.";
-        }
-        return null;
-      },
-      keyboardType: TextInputType.phone,
-      controller: _controllerWeight,
-      style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
-      maxLength: 50,
-      decoration: InputDecoration(
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
-        ),
-        labelStyle: TextStyle(
-          color: Colors.grey,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-        ),
-        labelText: "Peso",
-        hintText: "Escribe tu peso (Kg)",
-        counterText: '',
-        prefixIcon: Icon(
-          Icons.equalizer,
-          color: Colors.deepOrange,
-        ),
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------
-  Widget _createHeightEdit() {
-    return TextFormField(
-      textCapitalization: TextCapitalization.words,
-      validator: (text) {
-        if (text.length == 0) {
-          return "Este campo altura es requerido.";
-        } else if (!phoneRegExp.hasMatch(text)) {
-          return "El formato para altura no es correcto.";
-        }
-        return null;
-      },
-      keyboardType: TextInputType.phone,
-      controller: _controllerWeight,
-      style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
-      maxLength: 50,
-      decoration: InputDecoration(
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
-        ),
-        labelStyle: TextStyle(
-          color: Colors.grey,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-        ),
-        labelText: "Altura",
-        hintText: "Escribe tu altura (m)",
-        counterText: '',
-        prefixIcon: Icon(
-          Icons.equalizer,
-          color: Colors.deepOrange,
-        ),
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------
-  Widget _createPersonalIdentificationEdit() {
-    return TextFormField(
-      textCapitalization: TextCapitalization.words,
-      validator: (text) {
-        if (text.length == 0) {
-          return "Este campo #identificación es requerido.";
-        } else if (!personalIdentificationRegExp.hasMatch(text)) {
-          return "El formato para #identificación no es correcto.";
-        }
-        return null;
-      },
-      keyboardType: TextInputType.phone,
-      controller: _controllerPersonalIdentification,
-      style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
-      maxLength: 50,
-      decoration: InputDecoration(
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
-        ),
-        labelStyle: TextStyle(
-          color: Colors.grey,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(35.0)),
-        ),
-        labelText: "# Identificación",
-        hintText: "Escribe tu # Identificación",
-        counterText: '',
-        prefixIcon: Icon(
-          Icons.camera_front,
-          color: Colors.deepOrange,
-        ),
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
   Widget _createNameEdit() {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
       validator: (text) {
         if (text.length == 0) {
           return "Este campo nombre es requerido.";
-        } else if (!nameLastNameRegExp.hasMatch(text)) {
+        } else if (!regExp.name().hasMatch(text)) {
           return "El formato para nombre no es correcto.";
         }
         return null;
@@ -560,12 +308,12 @@ class _SignupPageState extends State<SignupPage>
       keyboardType: TextInputType.text,
       controller: _controllerName,
       style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
+      cursorColor: Theme.of(context).primaryColor,
       maxLength: 50,
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
         ),
         labelStyle: TextStyle(
           color: Colors.grey,
@@ -578,7 +326,202 @@ class _SignupPageState extends State<SignupPage>
         counterText: '',
         prefixIcon: Icon(
           Icons.account_circle,
-          color: Colors.deepOrange,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createLastNameEdit() {
+    return TextFormField(
+      controller: _controllerLastName,
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo apellido es requerido.";
+        } else if (!regExp.name().hasMatch(text)) {
+          return "El formato para apellido no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.text,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Theme.of(context).primaryColor,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Apellido",
+        hintText: "Escribe tu apellido",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.arrow_right,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createPhoneEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo teléfono es requerido.";
+        } else if (!regExp.phone().hasMatch(text)) {
+          return "El formato para teléfono no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerPhone,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Theme.of(context).primaryColor,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Teléfono",
+        hintText: "Escribe tu teléfono",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.smartphone,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createWeightEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo peso es requerido.";
+        } else if (!regExp.phone().hasMatch(text)) {
+          return "El formato para peso no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerWeight,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Theme.of(context).primaryColor,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Peso",
+        hintText: "Escribe tu peso (Kg)",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.equalizer,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createHeightEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo altura es requerido.";
+        } else if (!regExp.phone().hasMatch(text)) {
+          return "El formato para altura no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerWeight,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Theme.of(context).primaryColor,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Altura",
+        hintText: "Escribe tu altura (m)",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.equalizer,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _createPersonalIdentificationEdit() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.words,
+      validator: (text) {
+        if (text.length == 0) {
+          return "Este campo #identificación es requerido.";
+        } else if (!regExp.identification().hasMatch(text)) {
+          return "El formato para #identificación no es correcto.";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+      controller: _controllerPersonalIdentification,
+      style: TextStyle(fontSize: 20.0),
+      cursorColor: Theme.of(context).primaryColor,
+      maxLength: 50,
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "# Identificación",
+        hintText: "Escribe tu # Identificación",
+        counterText: '',
+        prefixIcon: Icon(
+          Icons.camera_front,
+          color: Theme.of(context).primaryColor,
         ),
       ),
     );
@@ -589,11 +532,11 @@ class _SignupPageState extends State<SignupPage>
     return TextFormField(
       controller: _controllerEmail,
       style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
+      cursorColor: Theme.of(context).primaryColor,
       validator: (text) {
         if (text.length == 0) {
           return "Este campo correo es requerido.";
-        } else if (!emailRegExp.hasMatch(text)) {
+        } else if (!regExp.email().hasMatch(text)) {
           return "El formato para correo no es correcto.";
         }
         return null;
@@ -603,7 +546,7 @@ class _SignupPageState extends State<SignupPage>
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
         ),
         labelStyle: TextStyle(
           color: Colors.grey,
@@ -614,7 +557,10 @@ class _SignupPageState extends State<SignupPage>
         hintText: 'Ingresa tu correo',
         labelText: 'Correo',
         counterText: '',
-        prefixIcon: Icon(Icons.email, color: Colors.deepOrange),
+        prefixIcon: Icon(
+          Icons.email,
+          color: Theme.of(context).primaryColor,
+        ),
       ),
     );
   }
@@ -631,7 +577,7 @@ class _SignupPageState extends State<SignupPage>
           return "Este campo contraseña es requerido.";
         } else if (text.length <= 5) {
           return "Tu contraseña debe ser al menos de 5 caracteres.";
-        } else if (!contRegExp.hasMatch(text)) {
+        } else if (!regExp.password().hasMatch(text)) {
           return "El formato para contraseña no es correcto.";
         }
         return null;
@@ -641,7 +587,7 @@ class _SignupPageState extends State<SignupPage>
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
         ),
         labelStyle: TextStyle(
           color: Colors.grey,
@@ -652,11 +598,13 @@ class _SignupPageState extends State<SignupPage>
         hintText: 'Ingresa tu contraseña',
         labelText: 'Contraseña',
         counterText: '',
-        prefixIcon: Icon(Icons.vpn_key, color: Colors.deepOrange),
+        prefixIcon: Icon(Icons.vpn_key, color: Theme.of(context).primaryColor),
         suffixIcon: IconButton(
             icon: Icon(
               Icons.remove_red_eye,
-              color: this._showPassword ? Colors.deepOrange : Colors.grey,
+              color: this._showPassword
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey,
             ),
             onPressed: () {
               setState(() => this._showPassword = !this._showPassword);
@@ -671,13 +619,13 @@ class _SignupPageState extends State<SignupPage>
       controller: _controllerPass2,
       obscureText: !this._showPassword2,
       style: TextStyle(fontSize: 20.0),
-      cursorColor: Colors.deepOrange,
+      cursorColor: Theme.of(context).primaryColor,
       validator: (text) {
         if (text.length == 0) {
           return "Este campo contraseña es requerido.";
         } else if (text.length <= 5) {
           return "Tu contraseña debe ser al menos de 5 caracteres.";
-        } else if (!contRegExp.hasMatch(text)) {
+        } else if (!regExp.password().hasMatch(text)) {
           return "El formato para contraseña no es correcto.";
         }
         return null;
@@ -687,7 +635,7 @@ class _SignupPageState extends State<SignupPage>
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          borderSide: const BorderSide(color: Colors.deepOrange, width: 1.0),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
         ),
         labelStyle: TextStyle(
           color: Colors.grey,
@@ -700,12 +648,14 @@ class _SignupPageState extends State<SignupPage>
         counterText: '',
         prefixIcon: Icon(
           Icons.redo,
-          color: Colors.deepOrange,
+          color: Theme.of(context).primaryColor,
         ),
         suffixIcon: IconButton(
             icon: Icon(
               Icons.remove_red_eye,
-              color: this._showPassword2 ? Colors.deepOrange : Colors.grey,
+              color: this._showPassword2
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey,
             ),
             onPressed: () {
               setState(() => this._showPassword2 = !this._showPassword2);

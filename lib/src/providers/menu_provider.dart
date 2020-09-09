@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
 class Menu {
-  var _itemsDrawer;
+  ListView _itemsDrawer;
 
   Menu(BuildContext context) {
     this._itemsDrawer = ListView(
@@ -10,11 +10,11 @@ class Menu {
       children: <Widget>[
         DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.deepOrange,
+            color: Theme.of(context).primaryColor,
           ),
           child: Center(
             child: Image.asset(
-              'assets/data/image/logo.png',
+              'assets/data/image/icon_white.png',
               height: 100.0,
             ),
           ),
@@ -30,7 +30,10 @@ class Menu {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Icon(Icons.power_settings_new),
+                  child: Icon(
+                    Icons.power_settings_new,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
                 Text("Cerrar Sesión"),
               ],
@@ -54,7 +57,10 @@ class Menu {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Icon(icon),
+              child: Icon(
+                icon,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
             Text(name),
           ],
@@ -66,7 +72,7 @@ class Menu {
     );
   }
 
-  ListView barra() {
-    return this._itemsDrawer;
+  ListView get drawer {
+    return _itemsDrawer;
   }
 }

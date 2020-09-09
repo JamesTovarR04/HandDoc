@@ -65,6 +65,7 @@ class AccessUtil {
     User user = new User();
     DBUtil.readIf('user', 'loggedIn = 1').then((user) {
       user = user;
+      user[0].loggedIn = 0;
     });
     DBUtil.updateUser(user);
     Navigator.pushNamed(context, LoginPage().route);
