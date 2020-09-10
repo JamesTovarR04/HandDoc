@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hand_doc/src/pages/login_page.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
 class Menu {
@@ -21,6 +23,14 @@ class Menu {
         ),
         _itemList(Icons.home, "Inicio", context, 'init/'),
         _itemList(Icons.person, "Perfil", context, 'profile/'),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Divider(
+            color: Theme.of(context).primaryColor,
+            height: 15,
+            thickness: 0.5,
+          ),
+        ),
         _itemList(Icons.info_outline, "Términos y Condiciones", context,
             'termsprivacy/'),
         //----------------------------------------------------------------------
@@ -38,9 +48,11 @@ class Menu {
                 Text("Cerrar Sesión"),
               ],
             ),
-            onTap: () {
+            onTap: () async {
               //----------------------------------------------------------------
-              AccessUtil.logout(context);
+              if (await AccessUtil.logout() == 1)
+                Navigator.pushNamed(context, LoginPage().route);
+              //SystemChannels.platform.invokeMethod('SystemNavigator.pop');
               //----------------------------------------------------------------
             },
           ),

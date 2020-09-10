@@ -136,7 +136,7 @@ class DBUtil {
     }
   }
 
-  static Future<void> updateUser(User user) async {
+  static Future<int> updateUser(User user) async {
     try {
       final db = await database;
 
@@ -146,9 +146,11 @@ class DBUtil {
         where: "id = ?",
         whereArgs: [user.id],
       );
+      return 1;
     } catch (e) {
       print("Problema al actualizar usuario" + e.toString());
     }
+    return 0;
   }
 
   //Delete user

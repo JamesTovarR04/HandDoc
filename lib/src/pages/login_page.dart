@@ -216,12 +216,22 @@ class LoginPageState extends State<LoginPage>
           padding: const EdgeInsets.all(13.0),
           child: Text("INICIAR SESIÓN"),
         ),
-        onPressed: () {
+        onPressed: () async {
+          int value = await AccessUtil.loginUser(
+                      _controllerEmail.text, _controllerPassword.text) ==
+                  1
+              ? 1
+              : 0;
           if (_key.currentState.validate()) {
             _key.currentState.save();
             //Here a method is called to login
-            AccessUtil.loginUser(
-                context, _controllerEmail.text, _controllerPassword.text);
+            if (value == 0) {
+              setState(() {
+                message = "Usuario o contraseña inválidos";
+              });
+            } else if (value == 1) {
+              Navigator.pushNamed(context, ProfilePage().route);
+            }
           }
         },
       ),

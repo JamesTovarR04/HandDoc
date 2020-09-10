@@ -6,17 +6,16 @@ import 'package:hand_doc/src/utils/DB_util.dart';
 
 class AccessUtil {
   // Connect user to system
-  static void loginUser(BuildContext context, String email, String password) {
+  static Future<int> loginUser(String email, String password) async {
     User user = new User();
     user.email = email;
     user.password = password;
 
     try {
-      DBUtil.updateUserIf(user);
-
-      Navigator.pushNamed(context, ProfilePage().route);
+      await DBUtil.updateUserIf(user);
+      return 1;
     } catch (e) {
-      print(e.toString());
+      return 0;
     }
   }
 
@@ -56,13 +55,18 @@ class AccessUtil {
   }
 
   // Logged out user
-  static Future<void> logout(BuildContext context) async {
+  static Future<int> logout() async {
     List<User> userI = new List<User>();
-    await DBUtil.readIf('user', 'loggedIn = 1').then((user) {
-      userI = user;
-      userI[0].loggedIn = 0;
-    });
-    await DBUtil.updateUser(userI[0]);
-    Navigator.pushNamed(context, LoginPage().route);
+    try {
+      await DBUtil.readIf('user', 'loggedIn = 1').then((user) {
+        userI = user;
+        userI[0].loggedIn = 0;
+      });
+      await DBUtil.updateUser(userI[0]);
+      return 1;
+    } catch (e) {
+      print("Probelmas al salir" + e.toString());
+      return 0;
+    }
   }
 }

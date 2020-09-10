@@ -28,22 +28,75 @@ class _ProfilePageState extends State<ProfilePage> {
   //----------------------------------------------------------------------------
   User _user = new User();
   //----------------------------------------------------------------------------
+  _dialogo(String resultado, IconData icono, Color color) {
+    showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+              titleTextStyle: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 20.0,
+              ),
+              title: const Text('Información'),
+              content: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Icon(
+                      icono,
+                      size: 70.0,
+                      color: color,
+                    ),
+                  ),
+                  Text(resultado),
+                ],
+              ),
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: RaisedButton(
+                    elevation: 7.0,
+                    disabledColor: Colors.grey,
+                    disabledTextColor: Colors.white,
+                    color: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                    ),
+                    textColor: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(13.0),
+                      child: Text("LISTO"),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
+            ));
+  }
+
+  //----------------------------------------------------------------------------
   @override
   void initState() {
     super.initState();
 
     DBUtil.readUser().then((user) {
-      setState(() {
-        _user = user[0];
-        _controllerName.text = _user.name;
-        _controllerLastName.text = _user.lastName;
-        _controllerPhone.text = _user.phone;
-        _controllerWeight.text = _user.weight.toString();
-        _controllerHeight.text = _user.height.toString();
-        //----------------------------------------------------------------------
+      if (user.length > 0)
+        setState(() {
+          _user = user[0];
+          _controllerName.text = _user.name != null ? _user.name : "";
+          _controllerLastName.text =
+              _user.lastName != null ? _user.lastName : "";
+          _controllerPhone.text = _user.phone != null ? _user.phone : "";
+          _controllerWeight.text =
+              _user.weight.toString() != null ? _user.weight.toString() : 0.0;
+          _controllerHeight.text =
+              _user.height.toString() != null ? _user.height.toString() : 0.0;
+          //----------------------------------------------------------------------
 
-        _nameUser = _user.name != null ? _user.name[0] + _user.lastName[0] : "";
-      });
+          _nameUser =
+              _user.name != null ? _user.name[0] + _user.lastName[0] : "";
+        });
     });
   }
 
@@ -361,7 +414,10 @@ class _ProfilePageState extends State<ProfilePage> {
             _user.height = double.parse(_controllerHeight.text);
             _user.weight = double.parse(_controllerWeight.text);
             try {
-              await DBUtil.updateUser(this._user);
+              if (await DBUtil.updateUser(this._user) == 1) {
+                _dialogo("Hecho con éxito", Icons.check_circle,
+                    Theme.of(context).primaryColor);
+              }
 
               await DBUtil.readUser().then((user) {
                 setState(() {
