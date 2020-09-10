@@ -12,11 +12,11 @@ class AccessUtil {
     user.password = password;
 
     try {
-      await DBUtil.updateUserIf(user);
-      return 1;
+      if (await DBUtil.updateUserIf(user) == 1) return 1;
     } catch (e) {
       return 0;
     }
+    return 0;
   }
 
   Future<void> registerUser(BuildContext context, User user) async {

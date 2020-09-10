@@ -109,7 +109,7 @@ class DBUtil {
   }
 
   // Update user if condition is true
-  static Future<void> updateUserIf(User user) async {
+  static Future<int> updateUserIf(User user) async {
     List<User> staticUser = new List<User>();
 
     try {
@@ -132,8 +132,9 @@ class DBUtil {
         );
       }
     } catch (e) {
-      print("Problema al actualizar usuario" + e.toString());
+      return 0;
     }
+    return 1;
   }
 
   static Future<int> updateUser(User user) async {

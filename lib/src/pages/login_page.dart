@@ -88,7 +88,6 @@ class LoginPageState extends State<LoginPage>
         SizedBox(height: 5.0),
         _createLoginForm(),
         //----------------------------------------------------------------------
-        SizedBox(height: 8.0),
         Text(
           message,
           textAlign: TextAlign.center,
@@ -97,6 +96,7 @@ class LoginPageState extends State<LoginPage>
             color: Colors.red,
           ),
         ),
+        SizedBox(height: 4.0),
         //----------------------------------------------------------------------
         _createButtonLogin(),
         _createForgotPass(),
@@ -217,17 +217,18 @@ class LoginPageState extends State<LoginPage>
           child: Text("INICIAR SESIÓN"),
         ),
         onPressed: () async {
-          int value = await AccessUtil.loginUser(
-                      _controllerEmail.text, _controllerPassword.text) ==
-                  1
-              ? 1
-              : 0;
+          int value = 0;
           if (_key.currentState.validate()) {
             _key.currentState.save();
             //Here a method is called to login
+
+            value = await AccessUtil.loginUser(
+                _controllerEmail.text, _controllerPassword.text);
+
             if (value == 0) {
               setState(() {
                 message = "Usuario o contraseña inválidos";
+                _controllerPassword.text = "";
               });
             } else if (value == 1) {
               Navigator.pushNamed(context, ProfilePage().route);
