@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hand_doc/src/design/animations.dart';
 import 'package:hand_doc/src/classes/user.dart';
 import 'package:hand_doc/src/providers/regularExpresions_provider.dart';
+import 'package:hand_doc/src/utils/DB_util.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
 class SignupPage extends StatefulWidget {
@@ -194,7 +195,7 @@ class _SignupPageState extends State<SignupPage>
     );
     if (picked != null) {
       setState(() {
-        _user.birthday = picked.toString();
+        _user.birthday = "${picked.year}/${picked.month}/${picked.day}";
         _controllerBirthday.text = _user.birthday;
       });
     }
@@ -275,6 +276,8 @@ class _SignupPageState extends State<SignupPage>
                 _user.height = double.parse(_controllerHeight.text);
                 _user.weight = double.parse(_controllerWeight.text);
 
+                AccessUtil access = new AccessUtil();
+
                 if (_key.currentState.validate()) {
                   _key.currentState.save();
                   //------------------------------------------------------------
@@ -284,7 +287,7 @@ class _SignupPageState extends State<SignupPage>
                       message = "El usuario se encuentra registrado";
                     });
                   } else {
-                    AccessUtil.registerUser(context, _user);
+                    access.registerUser(context, _user);
                   }
                   //------------------------------------------------------------
                 }
@@ -414,14 +417,14 @@ class _SignupPageState extends State<SignupPage>
   Widget _createWeightEdit() {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
-      validator: (text) {
+      /*validator: (text) {
         if (text.length == 0) {
           return "Este campo peso es requerido.";
         } else if (!regExp.phone().hasMatch(text)) {
           return "El formato para peso no es correcto.";
         }
         return null;
-      },
+      },*/
       keyboardType: TextInputType.phone,
       controller: _controllerWeight,
       style: TextStyle(fontSize: 20.0),
@@ -453,16 +456,16 @@ class _SignupPageState extends State<SignupPage>
   Widget _createHeightEdit() {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
-      validator: (text) {
+      /*validator: (text) {
         if (text.length == 0) {
           return "Este campo altura es requerido.";
         } else if (!regExp.phone().hasMatch(text)) {
           return "El formato para altura no es correcto.";
         }
         return null;
-      },
+      },*/
       keyboardType: TextInputType.phone,
-      controller: _controllerWeight,
+      controller: _controllerHeight,
       style: TextStyle(fontSize: 20.0),
       cursorColor: Theme.of(context).primaryColor,
       maxLength: 50,

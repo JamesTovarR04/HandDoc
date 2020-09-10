@@ -3,7 +3,6 @@ import 'package:hand_doc/src/classes/user.dart';
 import 'package:hand_doc/src/providers/menu_provider.dart';
 import 'package:hand_doc/src/providers/regularExpresions_provider.dart';
 import 'package:hand_doc/src/utils/DB_util.dart';
-import 'package:hand_doc/src/utils/access_util.dart';
 
 class ProfilePage extends StatefulWidget {
   final route = 'profile/';
@@ -14,8 +13,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _nameUser = "";
-  //----------------------------------------------------------------------------
   GlobalKey<FormState> _key = GlobalKey();
   //----------------------------------------------------------------------------
   TextEditingController _controllerName = new TextEditingController();
@@ -23,11 +20,33 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController _controllerPhone = new TextEditingController();
   TextEditingController _controllerWeight = new TextEditingController();
   TextEditingController _controllerHeight = new TextEditingController();
+
+  String _nameUser = "";
   //----------------------------------------------------------------------------
   // Object regular expressions
   RegularExpression regExp = new RegularExpression();
   //----------------------------------------------------------------------------
   User _user = new User();
+  //----------------------------------------------------------------------------
+  @override
+  void initState() {
+    super.initState();
+
+    DBUtil.readUser().then((user) {
+      setState(() {
+        _user = user[0];
+        _controllerName.text = _user.name;
+        _controllerLastName.text = _user.lastName;
+        _controllerPhone.text = _user.phone;
+        _controllerWeight.text = _user.weight.toString();
+        _controllerHeight.text = _user.height.toString();
+        //----------------------------------------------------------------------
+
+        _nameUser = _user.name != null ? _user.name[0] + _user.lastName[0] : "";
+      });
+    });
+  }
+
   //----------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
@@ -41,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
             margin: EdgeInsets.only(right: 10.0),
             child: CircleAvatar(
               child: Text(
-                "OS",
+                _nameUser,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               backgroundColor: Colors.white,
@@ -60,10 +79,11 @@ class _ProfilePageState extends State<ProfilePage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        SizedBox(height: 10.0),
+        SizedBox(height: 30.0),
         _createAvatarView(),
         _createUpdateUserForm(),
-        _createButtonLogin(),
+        _createButtonUpdate(),
+        SizedBox(height: 20.0)
       ],
     );
   }
@@ -242,14 +262,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _createWeightEdit() {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
-      validator: (text) {
+      /*validator: (text) {
         if (text.length == 0) {
           return "Este campo peso es requerido.";
         } else if (!regExp.phone().hasMatch(text)) {
           return "El formato para peso no es correcto.";
         }
         return null;
-      },
+      },*/
       keyboardType: TextInputType.phone,
       controller: _controllerWeight,
       style: TextStyle(fontSize: 20.0),
@@ -281,14 +301,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _createHeightEdit() {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
-      validator: (text) {
+      /*validator: (text) {
         if (text.length == 0) {
           return "Este campo altura es requerido.";
         } else if (!regExp.phone().hasMatch(text)) {
           return "El formato para altura no es correcto.";
         }
         return null;
-      },
+      },*/
       keyboardType: TextInputType.phone,
       controller: _controllerHeight,
       style: TextStyle(fontSize: 20.0),
@@ -317,7 +337,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   //----------------------------------------------------------------------------
-  Widget _createButtonLogin() {
+  Widget _createButtonUpdate() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
       child: RaisedButton(
@@ -331,7 +351,7 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: const EdgeInsets.all(13.0),
           child: Text("ACTUALIZAR DATOS"),
         ),
-        onPressed: () {
+        onPressed: () async {
           if (_key.currentState.validate()) {
             _key.currentState.save();
             //Here a method is called to login
@@ -340,8 +360,27 @@ class _ProfilePageState extends State<ProfilePage> {
             _user.phone = _controllerPhone.text;
             _user.height = double.parse(_controllerHeight.text);
             _user.weight = double.parse(_controllerWeight.text);
-            //AccessUtil.loginUser(
-            //context, _controllerEmail.text, _controllerPassword.text);
+            try {
+              await DBUtil.updateUser(this._user);
+
+              await DBUtil.readUser().then((user) {
+                setState(() {
+                  _user = user[0];
+                  _controllerName.text = _user.name;
+                  _controllerLastName.text = _user.lastName;
+                  _controllerPhone.text = _user.phone;
+                  _controllerWeight.text = _user.weight.toString();
+                  _controllerHeight.text = _user.height.toString();
+                  //----------------------------------------------------------------------
+
+                  _nameUser = _user.name != null
+                      ? _user.name[0] + _user.lastName[0]
+                      : "";
+                });
+              });
+            } catch (e) {
+              print(e.toString());
+            }
           }
         },
       ),

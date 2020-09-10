@@ -3,17 +3,30 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DBUtil {
+  static const nameDB = 'handdoc.db';
   // Method to define the path of database
   static final Future<Database> database = openReadOnlyDatabase(
-    join(getDatabasesPath().toString(), 'handdoc.db'),
+    join(getDatabasesPath().toString(), nameDB),
   );
 
   // Execute queries in database
   static final Future<Database> createBD = openDatabase(
-    join(getDatabasesPath().toString(), 'handdoc.db'),
-    onCreate: (db, version) {
+    join(getDatabasesPath().toString(), nameDB),
+    onCreate: (Database db, int version) {
       return db.execute(
-        "CREATE TABLE IF NOT EXISTS usuario_base(id INTEGER PRIMARY KEY, logeado TEXT, idUsuario INTEGER, correo TEXT)",
+        '''CREATE TABLE IF NOT EXISTS user (
+	id	INTEGER PRIMARY KEY AUTOINCREMENT,
+	name	TEXT NOT NULL,
+	lastName	TEXT NOT NULL,
+	phone		TEXT NOT NULL,
+	personalIdentification	INTEGER NOT NULL UNIQUE,
+	email	TEXT NOT NULL UNIQUE,
+	loggedIn INTEGER DEFAULT 0,
+	password	TEXT NOT NULL,
+	birthday	TEXT NOT NULL,
+	height	REAL NOT NULL,
+	weight	REAL NOT NULL
+)''',
       );
     },
     version: 1,
@@ -54,7 +67,8 @@ class DBUtil {
     try {
       final Database db = await database;
 
-      final List<Map<String, dynamic>> map = await db.query('user');
+      final List<Map<String, dynamic>> map =
+          await db.query('user', where: 'loggedIn = ?', whereArgs: [1]);
 
       // Convert List<Map<String, dynamic> en List<User>.
       return List.generate(map.length, (i) {
@@ -81,11 +95,13 @@ class DBUtil {
   static Future<void> insertUser(User user) async {
     try {
       final Database db = await database;
+      user.loggedIn = 1;
 
       await db.insert(
         'user',
         user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
+        nullColumnHack: 'id',
       );
     } catch (e) {
       print("Problema al insertar usuario" + e.toString());
@@ -99,8 +115,8 @@ class DBUtil {
     try {
       final db = await database;
 
-      DBUtil.readIf(
-              'user', 'email = ${user.email} AND password = ${user.password}')
+      await DBUtil.readIf('user',
+              'email = "${user.email}" AND password = "${user.password}"')
           .then((user) {
         staticUser = user;
       });

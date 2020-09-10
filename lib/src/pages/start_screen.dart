@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hand_doc/src/pages/login_page.dart';
+import 'package:hand_doc/src/pages/profile_page.dart';
+import 'package:hand_doc/src/utils/access_util.dart';
 
 class StartScreen extends StatefulWidget {
   final route = '/';
@@ -9,12 +11,21 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
+  String route = LoginPage().route;
+
   @override
   void initState() {
     super.initState();
 
+    // Verify if session was started before and create a Database
+    AccessUtil.checkSession(context).then((value) {
+      if (value == 0)
+        route = LoginPage().route;
+      else
+        route = ProfilePage().route;
+    });
     Timer(Duration(seconds: 3), () {
-      Navigator.pushNamed(context, LoginPage().route);
+      Navigator.pushNamed(context, route);
     });
   }
 
