@@ -6,6 +6,8 @@ import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
+import 'home_page.dart';
+
 class LoginPage extends StatefulWidget {
   final route = 'login/';
 
@@ -35,6 +37,7 @@ class LoginPageState extends State<LoginPage>
 //Methods to define initial state of animations
   @override
   void initState() {
+    super.initState();
     //--------------------------------------------------------------------------
     this._controllerAnimation = AnimationController(
       duration: Duration(milliseconds: 1000),
@@ -217,6 +220,7 @@ class LoginPageState extends State<LoginPage>
           child: Text("INICIAR SESIÓN"),
         ),
         onPressed: () async {
+          FocusScope.of(context).requestFocus(new FocusNode());
           int value = 0;
           if (_key.currentState.validate()) {
             _key.currentState.save();
@@ -231,7 +235,7 @@ class LoginPageState extends State<LoginPage>
                 _controllerPassword.text = "";
               });
             } else if (value == 1) {
-              Navigator.pushNamed(context, ProfilePage().route);
+              Navigator.pushNamed(context, HomePage().route);
             }
           }
         },

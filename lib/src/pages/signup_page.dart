@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hand_doc/src/design/animations.dart';
 import 'package:hand_doc/src/classes/user.dart';
 import 'package:hand_doc/src/providers/regularExpresions_provider.dart';
-import 'package:hand_doc/src/utils/DB_util.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
 class SignupPage extends StatefulWidget {
@@ -265,6 +264,7 @@ class _SignupPageState extends State<SignupPage>
                 (_controllerPass2 != _controllerPass)
             ? null
             : () {
+                FocusScope.of(context).requestFocus(new FocusNode());
                 _user.name = _controllerName.text;
                 _user.lastName = _controllerLastName.text;
                 _user.phone = _controllerPhone.text;

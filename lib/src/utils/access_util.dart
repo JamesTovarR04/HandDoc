@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hand_doc/src/classes/user.dart';
-import 'package:hand_doc/src/pages/login_page.dart';
 import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/utils/DB_util.dart';
 

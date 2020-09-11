@@ -60,6 +60,7 @@ class DBUtil {
     } catch (e) {
       print("Problema al leer los usuarios" + e.toString());
     }
+    return List<User>();
   }
 
   // Read if there are users in database
@@ -89,6 +90,7 @@ class DBUtil {
     } catch (e) {
       print("Problema al leer los usuarios" + e.toString());
     }
+    return List<User>();
   }
 
   // Insert user

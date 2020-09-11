@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hand_doc/src/pages/home_page.dart';
 import 'package:hand_doc/src/pages/login_page.dart';
-import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
 class StartScreen extends StatefulWidget {
@@ -22,10 +22,10 @@ class _StartScreenState extends State<StartScreen> {
       if (value == 0)
         route = LoginPage().route;
       else
-        route = ProfilePage().route;
+        route = HomePage().route;
     });
     Timer(Duration(seconds: 3), () {
-      Navigator.pushNamed(context, route);
+      Navigator.pushReplacementNamed(context, route);
     });
   }
 
