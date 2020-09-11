@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 final ThemeData themeLight = ThemeData(
-  accentColor: themeGreen.shade900,
+  accentColor: themeGreen[900],
+  primaryColor: themeGreen,
   accentColorBrightness: Brightness.light,
   accentIconTheme: IconThemeData(color: themeGreen.shade50),
   brightness: Brightness.light,
-  primarySwatch: themeGreen,
+  backgroundColor: Colors.white,
   visualDensity: VisualDensity.adaptivePlatformDensity,
+  textSelectionColor: themeGreen[300],
+  primarySwatch: themeGreen,
 );
 
 const MaterialColor themeGreen = const MaterialColor(
@@ -20,7 +23,7 @@ const MaterialColor themeGreen = const MaterialColor(
     500: const Color(0xFF38B672),
     600: const Color(0xFF12B05B),
     700: const Color(0xFF009245),
-    800: const Color(0xFF007737),
-    900: const Color(0xFF005A2A),
+    800: const Color(0xFF00813C),
+    900: const Color(0xFF004420),
   },
 );

@@ -43,17 +43,17 @@ class _SignupPageState extends State<SignupPage>
   GlobalKey<FormState> _key = GlobalKey();
   //----------------------------------------------------------------------------
 
-  TextEditingController _controllerName = new TextEditingController();
-  TextEditingController _controllerLastName = new TextEditingController();
+  TextEditingController _controllerName = TextEditingController();
+  TextEditingController _controllerLastName = TextEditingController();
   TextEditingController _controllerPersonalIdentification =
-      new TextEditingController();
-  TextEditingController _controllerPhone = new TextEditingController();
-  TextEditingController _controllerBirthday = new TextEditingController();
-  TextEditingController _controllerEmail = new TextEditingController();
-  TextEditingController _controllerWeight = new TextEditingController();
-  TextEditingController _controllerHeight = new TextEditingController();
-  TextEditingController _controllerPass = new TextEditingController();
-  TextEditingController _controllerPass2 = new TextEditingController();
+      TextEditingController();
+  TextEditingController _controllerPhone = TextEditingController();
+  TextEditingController _controllerBirthday = TextEditingController();
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerWeight = TextEditingController();
+  TextEditingController _controllerHeight = TextEditingController();
+  TextEditingController _controllerPass = TextEditingController();
+  TextEditingController _controllerPass2 = TextEditingController();
   //----------------------------------------------------------------------------
   // Object regular expressions
   RegularExpression regExp = new RegularExpression();

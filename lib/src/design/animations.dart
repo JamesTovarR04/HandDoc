@@ -10,12 +10,6 @@ class AnimationH {
             colors: [
               Theme.of(context).accentColor,
               Theme.of(context).primaryColor,
-              Theme.of(context).accentColor
-            ],
-            stops: [
-              0.3,
-              1,
-              0.5
             ],
             begin: FractionalOffset.topCenter,
             end: FractionalOffset.bottomCenter),

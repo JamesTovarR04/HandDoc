@@ -5,6 +5,7 @@ import 'package:hand_doc/src/design/animations.dart';
 import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
+import 'package:hand_doc/src/pages/triage_page.dart';
 
 import 'home_page.dart';
 
@@ -292,6 +293,21 @@ class LoginPageState extends State<LoginPage>
           ),
           onTap: () {
             Navigator.pushNamed(context, SignupPage().route);
+          },
+        ),
+        InkWell(
+          child: Padding(
+            padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+            child: Text(
+              "TRIAGE",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+          onTap: () {
+            Navigator.pushNamed(context, TriagePage().route);
           },
         ),
       ],
