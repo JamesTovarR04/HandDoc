@@ -91,10 +91,10 @@ class CustomDialog extends StatelessWidget {
           left: Consts.padding,
           right: Consts.padding,
           child: CircleAvatar(
-            backgroundColor: color,
-            radius: Consts.avatarRadius,
-          ),
-        ), //...top circlular image part,
+              backgroundColor: color,
+              radius: Consts.avatarRadius,
+              child: Image.asset('assets/data/image/amb.gif')),
+        ),
       ],
     );
   }

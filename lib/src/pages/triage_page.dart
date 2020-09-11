@@ -61,7 +61,7 @@ class _TriagePageState extends State<TriagePage> {
                   Padding(
                     padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0),
                     child: Image.asset(
-                      "assets/data/image/icon_green.png",
+                      "assets/data/image/corazon.png",
                       height: 70.0,
                     ),
                   ),
@@ -119,7 +119,7 @@ class _TriagePageState extends State<TriagePage> {
             ),
           );
         },
-        tooltip: 'Increment Counter',
+        tooltip: 'Continue',
         backgroundColor: _triage[_currentStep]['color'],
         label: Text(
           'Continuar',

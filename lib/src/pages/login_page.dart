@@ -295,21 +295,6 @@ class LoginPageState extends State<LoginPage>
             Navigator.pushNamed(context, SignupPage().route);
           },
         ),
-        InkWell(
-          child: Padding(
-            padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-            child: Text(
-              "TRIAGE",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-          onTap: () {
-            Navigator.pushNamed(context, TriagePage().route);
-          },
-        ),
       ],
     );
   }
