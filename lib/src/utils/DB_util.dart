@@ -25,7 +25,8 @@ class DBUtil {
 	password	TEXT NOT NULL,
 	birthday	TEXT NOT NULL,
 	height	REAL NOT NULL,
-	weight	REAL NOT NULL
+	weight	REAL NOT NULL,
+  disease INTEGER NOT NULL DEFAULT 0
 )''',
       );
     },
@@ -55,6 +56,7 @@ class DBUtil {
           birthday: map[i]['birthday'],
           height: map[i]['height'],
           weight: map[i]['weight'],
+          disease: map[i]['disease'],
         );
       });
     } catch (e) {
@@ -85,6 +87,7 @@ class DBUtil {
           birthday: map[i]['birthday'],
           height: map[i]['height'],
           weight: map[i]['weight'],
+          disease: map[i]['disease'],
         );
       });
     } catch (e) {
@@ -94,7 +97,7 @@ class DBUtil {
   }
 
   // Insert user
-  static Future<void> insertUser(User user) async {
+  static Future<int> insertUser(User user) async {
     try {
       final Database db = await database;
       user.loggedIn = 1;
@@ -106,8 +109,9 @@ class DBUtil {
         nullColumnHack: 'id',
       );
     } catch (e) {
-      print("Problema al insertar usuario" + e.toString());
+      return 0;
     }
+    return 1;
   }
 
   // Update user if condition is true

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hand_doc/src/classes/user.dart';
-import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/utils/DB_util.dart';
 
 class AccessUtil {
@@ -18,13 +17,18 @@ class AccessUtil {
     return 0;
   }
 
-  Future<void> registerUser(BuildContext context, User user) async {
+  static Future<int> registerUser(User user) async {
     // Create user record and allow login
-    await DBUtil.insertUser(user);
-    Navigator.pushNamed(context, ProfilePage().route);
+    try {
+      await DBUtil.insertUser(user);
+    } catch (e) {
+      return 0;
+    }
+
+    return 1;
   }
 
-  static Future checkSession(BuildContext context) async {
+  static Future<int> checkSession(BuildContext context) async {
     var longitud = 0;
 
     try {

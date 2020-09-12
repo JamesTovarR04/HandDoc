@@ -4,6 +4,7 @@ class CustomDialog extends StatelessWidget {
   final String title, description, buttonText;
   final Image image;
   final Color color;
+  final urlImage;
 
   CustomDialog({
     @required this.title,
@@ -11,6 +12,7 @@ class CustomDialog extends StatelessWidget {
     @required this.buttonText,
     this.color = Colors.grey,
     this.image,
+    this.urlImage,
   });
 
   @override
@@ -21,11 +23,11 @@ class CustomDialog extends StatelessWidget {
       ),
       elevation: 0.0,
       backgroundColor: Colors.transparent,
-      child: dialogContent(context),
+      child: dialogContent(context, urlImage),
     );
   }
 
-  dialogContent(BuildContext context) {
+  dialogContent(BuildContext context, String urlImage) {
     return Stack(
       children: <Widget>[
         Container(
@@ -93,7 +95,7 @@ class CustomDialog extends StatelessWidget {
           child: CircleAvatar(
               backgroundColor: color,
               radius: Consts.avatarRadius,
-              child: Image.asset('assets/data/image/amb.gif')),
+              child: Image.asset(urlImage)),
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hand_doc/src/pages/home_page.dart';
 import 'package:hand_doc/src/pages/login_page.dart';
+import 'package:hand_doc/src/pages/medicine_page.dart';
 import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
@@ -24,6 +25,8 @@ class Menu {
         ),
         _itemList(Icons.home, "Inicio", context, HomePage().route),
         _itemList(Icons.person, "Perfil", context, ProfilePage().route),
+        _itemList(
+            Icons.assignment_ind, "Fórmula", context, MedicinePage().route),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Divider(

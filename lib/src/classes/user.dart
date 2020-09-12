@@ -10,6 +10,7 @@ class User {
   String birthday;
   double height;
   double weight;
+  int disease;
 
   User({
     this.id,
@@ -23,6 +24,7 @@ class User {
     this.birthday,
     this.height,
     this.weight,
+    this.disease,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class User {
       birthday: json['birthday'],
       height: json['height'],
       weight: json['weight'],
+      disease: json['disease'],
     );
   }
 
@@ -54,6 +57,7 @@ class User {
       'birthday': birthday,
       'height': height,
       'weight': weight,
+      'disease': disease,
     };
   }
 }

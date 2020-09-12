@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hand_doc/src/design/animations.dart';
 import 'package:hand_doc/src/classes/user.dart';
+import 'package:hand_doc/src/pages/home_page.dart';
 import 'package:hand_doc/src/providers/regularExpresions_provider.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
@@ -263,7 +264,7 @@ class _SignupPageState extends State<SignupPage>
         onPressed: (this._checkBoxVal == false) &&
                 (_controllerPass2 != _controllerPass)
             ? null
-            : () {
+            : () async {
                 FocusScope.of(context).requestFocus(new FocusNode());
                 _user.name = _controllerName.text;
                 _user.lastName = _controllerLastName.text;
@@ -276,8 +277,6 @@ class _SignupPageState extends State<SignupPage>
                 _user.height = double.parse(_controllerHeight.text);
                 _user.weight = double.parse(_controllerWeight.text);
 
-                AccessUtil access = new AccessUtil();
-
                 if (_key.currentState.validate()) {
                   _key.currentState.save();
                   //------------------------------------------------------------
@@ -287,7 +286,13 @@ class _SignupPageState extends State<SignupPage>
                       message = "El usuario se encuentra registrado";
                     });
                   } else {
-                    access.registerUser(context, _user);
+                    if (await AccessUtil.registerUser(_user) == 1) {
+                      Navigator.pushNamed(context, HomePage().route);
+                    } else {
+                      setState(() {
+                        message = "Algo salió mal :(";
+                      });
+                    }
                   }
                   //------------------------------------------------------------
                 }

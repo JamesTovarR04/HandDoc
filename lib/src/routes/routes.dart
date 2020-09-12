@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hand_doc/src/pages/home_page.dart';
 import 'package:hand_doc/src/pages/login_page.dart';
+import 'package:hand_doc/src/pages/medicine_page.dart';
 import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/pages/report_symptoms_page.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
@@ -16,5 +17,6 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     HomePage().route: (context) => HomePage(),
     ReportSymptomsPage().route: (context) => ReportSymptomsPage(),
     TriagePage().route: (context) => TriagePage(),
+    MedicinePage().route: (context) => MedicinePage(),
   };
 }

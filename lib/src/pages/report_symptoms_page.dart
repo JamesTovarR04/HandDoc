@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hand_doc/src/classes/user.dart';
+import 'package:hand_doc/src/providers/custom_dialog.dart';
 import 'package:hand_doc/src/providers/menu_provider.dart';
+import 'package:hand_doc/src/utils/DB_util.dart';
 
 class ReportSymptomsPage extends StatefulWidget {
   final route = 'report/';
@@ -10,31 +13,50 @@ class ReportSymptomsPage extends StatefulWidget {
 }
 
 class _ReportSymptomsPageState extends State<ReportSymptomsPage> {
-  List<bool> _checkbox = new List<bool>(18);
+  List<bool> _checkbox = new List<bool>(16);
+  List<String> symptoms = new List<String>(16);
+  //----------------------------------------------------------------------------
+  User _user = new User();
   //----------------------------------------------------------------------------
   @override
   void initState() {
     super.initState();
+    // Initializing values for list checkbox bool validation
 
-    _checkbox[0] = false;
-    _checkbox[1] = false;
-    _checkbox[2] = false;
-    _checkbox[3] = false;
-    _checkbox[4] = false;
+    setState(() {
+      for (var i = 0; i < _checkbox.length; i++) {
+        _checkbox[i] = false;
+      }
 
-    _checkbox[5] = false;
-    _checkbox[6] = false;
-    _checkbox[7] = false;
-    _checkbox[8] = false;
-    _checkbox[9] = false;
-
-    _checkbox[10] = false;
-    _checkbox[11] = false;
-    _checkbox[12] = false;
-    _checkbox[13] = false;
-    _checkbox[14] = false;
-    _checkbox[15] = false;
-    _checkbox[16] = false;
+      symptoms = [
+        "Dolor agudo en el pecho",
+        "Dificultad para respirar",
+        "Respiración rápida",
+        "Sibilancias al respirar",
+        //------------------
+        "Escalofríos",
+        "Dolor de abdomen",
+        "Cólicos",
+        "Diarrea",
+        //------------------
+        "Dolor en las articulaciones",
+        "Dolor en la parte posterior de los ojos",
+        "Erupciones o manchas rojas",
+        "Facilidad para desarrollar hematomas",
+        //------------------
+        "Tos con flema, seca o crónica",
+        "Congestión nasal",
+        "Dificultad para respirar",
+        "Dolor de garganta",
+      ];
+      //------------------------------------------------------------------------
+      DBUtil.readUser().then((user) {
+        if (user.length > 0)
+          setState(() {
+            _user = user[0];
+          });
+      });
+    });
   }
 
   //----------------------------------------------------------------------------
@@ -50,74 +72,112 @@ class _ReportSymptomsPageState extends State<ReportSymptomsPage> {
         title: Text("Síntomas"),
       ),
       body: SingleChildScrollView(
-        child: _itemsSymptoms(),
+        child: Column(
+          children: [
+            _itemsSymptoms(),
+            Container(
+              height: MediaQuery.of(context).size.height / 1.55,
+              padding: EdgeInsets.all(16.0),
+              child: ListView.builder(
+                itemCount: symptoms.length,
+                itemBuilder: (context, index) {
+                  return _listSymptomTile(symptoms[index], index);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () async {
+          // Update atribute disease
+          setState(() {
+            _user.disease = _determineDisease() + 1;
+          });
+
+          try {
+            if (await DBUtil.updateUser(_user) == 1) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => CustomDialog(
+                  title: '¡Recibido el reporte!',
+                  description:
+                      "Se ha recibido tu diagnóstico, de inmediato te vamos a redirijir a la pantalla donde podrás observar la formulación médica recomendada.",
+                  buttonText: "Aceptar",
+                  color: Theme.of(context).primaryColor,
+                  urlImage: 'assets/data/image/medicamentos.png',
+                ),
+              );
+            }
+          } catch (e) {
+            print("Error " + e.toString());
+          }
+        },
+        tooltip: 'Continuar',
+        label: Text(
+          'Continuar',
+          style: TextStyle(fontSize: 16.0),
+        ),
+        icon: Icon(
+          Icons.local_hospital,
+          size: 19.0,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.remove_red_eye,
-          size: 35.0,
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        onPressed: () {},
-      ),
     );
   }
 
   Widget _itemsSymptoms() {
     return Padding(
-      padding: const EdgeInsets.all(14.0),
+      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 30.0),
-          Text(
-            " Ayúdanos a determinar tu enfermedad ",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+          SizedBox(height: 10.0),
+          ListTile(
+            title: Text(
+              " Ayúdanos a determinar tu enfermedad ",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+              ),
+            ),
+            leading: Image.asset(
+              'assets/data/image/helpus.png',
+              height: 80.0,
             ),
           ),
-          SizedBox(height: 10.0),
+          Divider(
+            thickness: 1.2,
+            height: 25.0,
+          ),
           Icon(
-            Icons.assignment,
-            size: 60.0,
+            Icons.arrow_drop_down_circle,
             color: Theme.of(context).primaryColor,
           ),
-          SizedBox(height: 40.0),
-          _listSymptom("Dolor agudo en el pecho", 0),
-          _listSymptom("Dificultad para respirar", 1),
-          _listSymptom("Respiración rápida", 2),
-          _listSymptom("Escalofríos", 3),
-          //-------------------------------------
-          _listSymptom("Dolor de abdomen", 4),
-          _listSymptom("Cólicos", 5),
-          _listSymptom("Diarrea", 6),
-          _listSymptom("Flatulencias", 7),
-          _listSymptom("Dolor de cabeza", 8),
-          //-------------------------------------
-          _listSymptom("Dolor en las articulaciones", 9),
-          _listSymptom("Dolor en la parte posterior de los ojos", 10),
-          _listSymptom("Erupciones o manchas rojas", 11),
-          _listSymptom("Facilidad para desarrollar hematomas", 12),
-          //-------------------------------------
-          _listSymptom("Tos con flema, seca o crónica", 13),
-          _listSymptom("Congestión nasal", 14),
-          _listSymptom("Dificultad para respirar", 15),
-          _listSymptom("Dolor de garganta", 16),
-
-          SizedBox(height: 65.0),
         ],
       ),
     );
   }
 
-  Widget _listSymptom(String symptom, int i) {
+  Widget _listSymptomTile(String symptom, int i) {
     return Column(
       children: [
         ListTile(
+          onTap: () {
+            if (_checkbox[i]) {
+              setState(() {
+                _checkbox[i] = false;
+              });
+            } else {
+              setState(() {
+                _checkbox[i] = true;
+              });
+            }
+          },
           title: Text(symptom),
           trailing: Checkbox(
             value: _checkbox[i],
@@ -133,5 +193,41 @@ class _ReportSymptomsPageState extends State<ReportSymptomsPage> {
         ),
       ],
     );
+  }
+
+  int _determineDisease() {
+    List<int> cuarto = new List<int>(4);
+
+    cuarto[0] = 0;
+    cuarto[1] = 0;
+    cuarto[2] = 0;
+    cuarto[3] = 0;
+
+    for (var i = 0; i < _checkbox.length; i++) {
+      if (i >= 0 && i < 3) {
+        if (_checkbox[i]) cuarto[0]++;
+      }
+      if (i >= 3 && i < 7) {
+        if (_checkbox[i]) cuarto[1]++;
+      }
+      if (i >= 7 && i < 11) {
+        if (_checkbox[i]) cuarto[2]++;
+      }
+      if (i >= 11 && i < 15) {
+        if (_checkbox[i]) cuarto[3]++;
+      }
+    }
+
+    var max = 0;
+    var position = 0;
+
+    for (var i = 0; i < 4; i++) {
+      if (cuarto[i] > max) {
+        max = cuarto[i];
+        position = i;
+      }
+    }
+
+    return position;
   }
 }

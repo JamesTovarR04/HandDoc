@@ -113,13 +113,14 @@ class _TriagePageState extends State<TriagePage> {
             builder: (BuildContext context) => CustomDialog(
               title: '¡Recibimos tu solucitud!',
               description:
-                  "El hospital municipal de Algeciras ha recibido tu solicitud y tus datos para la agilidad de la urgencia médica, en breve la ambulancia y el correspondiente personal médico se comunicará contigo para ir inmediatamente al lugar en que se encuentra.",
+                  "El hospital municipal de Algeciras ha recibido tu solicitud y tus datos para la agilidad de la urgencia médica, en breve la ambulancia y el correspondiente personal médico se comunicará contigo para ir inmediatamente al lugar donde te encuentras.",
               buttonText: "Aceptar",
               color: _triage[_currentStep]['color'],
+              urlImage: 'assets/data/image/amb.gif',
             ),
           );
         },
-        tooltip: 'Continue',
+        tooltip: 'Continuar',
         backgroundColor: _triage[_currentStep]['color'],
         label: Text(
           'Continuar',
@@ -236,7 +237,7 @@ class _TriagePageState extends State<TriagePage> {
               text: 'para la vida o la funcionalidad de miembro u órgano.'),
         ],
       ),
-      'color': Colors.orange[700]
+      'color': Colors.orange[700],
     },
   ];
 

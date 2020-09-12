@@ -5,7 +5,6 @@ import 'package:hand_doc/src/design/animations.dart';
 import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
-import 'package:hand_doc/src/pages/triage_page.dart';
 
 import 'home_page.dart';
 

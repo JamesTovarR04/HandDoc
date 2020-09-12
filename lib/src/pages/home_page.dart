@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Text(
-                    '¿Necesitas asistencia medica en este momento?',
+                    '¿Necesitas asistencia médica en este momento?',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16.0,
