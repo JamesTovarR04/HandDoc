@@ -25,9 +25,9 @@ class _HomePageState extends State<HomePage> {
     _user.name = "";
 
     DBUtil.readUser().then((user) {
-      if (user.length > 0)
+      if (user != null)
         setState(() {
-          _user = user[0];
+          _user = user;
         });
     });
   }
@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   //----------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    Menu menu = new Menu(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: Drawer(
-        child: menu.drawer,
+        child: Menu(),
       ),
       body: _createWave(),
     );
@@ -55,9 +54,6 @@ class _HomePageState extends State<HomePage> {
   Widget _createWave() {
     return Stack(
       children: <Widget>[
-        /*ListView(
-          children: [
-            SizedBox(height: 50.0),*/
         Container(
           height: 100,
           child: RotatedBox(
@@ -87,7 +83,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         SingleChildScrollView(
-          //Lo puse porque se vei mal en pantallas mas pequeñas
           child: _itemsHome(),
         )
       ],

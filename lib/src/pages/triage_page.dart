@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hand_doc/src/providers/menu_provider.dart';
 import 'package:hand_doc/src/providers/custom_dialog.dart';
+import 'package:hand_doc/src/pages/home_page.dart';
 
 class TriagePage extends StatefulWidget {
   final route = '/triage';
@@ -20,10 +21,8 @@ class _TriagePageState extends State<TriagePage> {
 
   @override
   Widget build(BuildContext context) {
-    Menu menu = Menu(context);
-
     return Scaffold(
-      drawer: Drawer(child: menu.drawer),
+      drawer: Drawer(child: Menu()),
       appBar: AppBar(
           title: const Text('TRIAGE'),
           actions: [
@@ -117,6 +116,7 @@ class _TriagePageState extends State<TriagePage> {
               buttonText: "Aceptar",
               color: _triage[_currentStep]['color'],
               urlImage: 'assets/data/image/amb.gif',
+              routeRedirect: HomePage().route,
             ),
           );
         },
@@ -227,7 +227,7 @@ class _TriagePageState extends State<TriagePage> {
         children: <TextSpan>[
           TextSpan(
               text:
-                  'El paciente presenta una condición clínica relacionada con problemas agudos o crónicos sin '),
+                  'El paciente presenta una condición clínica relacionada con problemas agudos o crónicos '),
           TextSpan(
             text:
                 'sin evidencia de deterioro que comprometa el estado general de paciente y no representa un riesgo evidente ',

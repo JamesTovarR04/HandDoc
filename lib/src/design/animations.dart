@@ -40,7 +40,11 @@ class AnimationH {
               child: Text(
                 "HandDoc",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 17.0),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontFamily: 'CaviarDreams',
+                ),
               ),
             )
           ],

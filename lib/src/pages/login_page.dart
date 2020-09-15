@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hand_doc/src/design/animations.dart';
-import 'package:hand_doc/src/pages/profile_page.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
+import 'package:hand_doc/src/providers/regularExpresions_provider.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
 
 import 'home_page.dart';
@@ -27,12 +27,10 @@ class LoginPageState extends State<LoginPage>
   TextEditingController _controllerPassword = new TextEditingController();
   //----------------------------------------------------------------------------
 
-  RegExp emailRegExp =
-      new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
-
-  RegExp contRegExp = new RegExp(r'^([1-zA-Z0-1@.\s]{1,255})$');
+  RegularExpression regExp = new RegularExpression();
 
   String message = '';
+  bool _checkBoxVal = true;
 //------------------------------------------------------------------------------
 //Methods to define initial state of animations
   @override
@@ -86,24 +84,27 @@ class LoginPageState extends State<LoginPage>
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 22.0,
+            color: Colors.black87,
           ),
         ),
-        SizedBox(height: 5.0),
+        SizedBox(height: 10.0),
         _createLoginForm(),
+        SizedBox(height: 5.0),
         //----------------------------------------------------------------------
-        Text(
-          message,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 15.0,
-            color: Colors.red,
+        if (message != '')
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 15.0,
+              color: Colors.red,
+            ),
           ),
-        ),
-        SizedBox(height: 4.0),
         //----------------------------------------------------------------------
+        _savedSessionCheckBox(),
         _createButtonLogin(),
-        _createForgotPass(),
         _createSignupButton(),
+        SizedBox(height: 20.0),
       ],
     );
   }
@@ -113,7 +114,7 @@ class LoginPageState extends State<LoginPage>
     return Form(
       key: _key,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
         child: Column(
           children: <Widget>[
             SizedBox(height: 2.0),
@@ -123,9 +124,10 @@ class LoginPageState extends State<LoginPage>
               cursorColor: Theme.of(context).primaryColor,
               validator: (text) {
                 if (text.length == 0) {
-                  return "Este campo correo es requerido.";
-                } else if (!emailRegExp.hasMatch(text)) {
-                  return "El formato para correo no es correcto.";
+                  return "Este campo es requerido.";
+                } else if (!regExp.email().hasMatch(text) &&
+                    !regExp.identification().hasMatch(text)) {
+                  return "El formato no es correcto.";
                 }
                 return null;
               },
@@ -143,10 +145,10 @@ class LoginPageState extends State<LoginPage>
                   borderRadius: BorderRadius.all(Radius.circular(35.0)),
                 ),
                 hintText: 'Ingresa tu correo',
-                labelText: 'Correo',
+                labelText: 'N° identificación o correo',
                 counterText: '',
-                prefixIcon:
-                    Icon(Icons.email, color: Theme.of(context).primaryColor),
+                prefixIcon: Icon(Icons.account_circle,
+                    color: Theme.of(context).primaryColor),
               ),
             ),
             //------------------------------------------------------------------
@@ -161,7 +163,7 @@ class LoginPageState extends State<LoginPage>
                   return "Este campo contraseña es requerido.";
                 } else if (text.length <= 5) {
                   return "Tu contraseña debe ser al menos de 5 caracteres.";
-                } else if (!contRegExp.hasMatch(text)) {
+                } else if (!regExp.password().hasMatch(text)) {
                   return "El formato para contraseña no es correcto.";
                 }
                 return null;
@@ -221,20 +223,21 @@ class LoginPageState extends State<LoginPage>
         ),
         onPressed: () async {
           FocusScope.of(context).requestFocus(new FocusNode());
-          int value = 0;
           if (_key.currentState.validate()) {
             _key.currentState.save();
-            //Here a method is called to login
 
-            value = await AccessUtil.loginUser(
-                _controllerEmail.text, _controllerPassword.text);
+            bool access = await AccessUtil.loginUser(
+              _controllerEmail.text,
+              _controllerPassword.text,
+              _checkBoxVal,
+            );
 
-            if (value == 0) {
+            if (!access) {
               setState(() {
                 message = "Usuario o contraseña inválidos";
                 _controllerPassword.text = "";
               });
-            } else if (value == 1) {
+            } else {
               Navigator.pushNamed(context, HomePage().route);
             }
           }
@@ -244,29 +247,32 @@ class LoginPageState extends State<LoginPage>
   }
 
   //------------------------------------------------------------------------------
-  Widget _createForgotPass() {
-    return InkWell(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12.0,
-          vertical: 9.0,
+  Widget _savedSessionCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Checkbox(
+          activeColor: Theme.of(context).primaryColor,
+          onChanged: (bool value) {
+            setState(() => this._checkBoxVal = value);
+          },
+          value: this._checkBoxVal,
         ),
-        child: Text(
-          "¿Olvidaste tu contraseña?",
-          style: TextStyle(fontSize: 15.0, color: Colors.grey),
-          textAlign: TextAlign.center,
+        Text(
+          'Guardar en este dispositivo.',
+          style: TextStyle(
+            color: Colors.black54,
+            fontSize: 15.0,
+          ),
         ),
-      ),
-      onTap: () {
-        Navigator.pushNamed(context, ProfilePage().route);
-      },
+      ],
     );
   }
 
+  //------------------------------------------------------------------------------
   Widget _createSignupButton() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(top: 10.0),
@@ -275,28 +281,30 @@ class LoginPageState extends State<LoginPage>
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 15.0,
-              color: Theme.of(context).accentColor,
+              color: Colors.black54,
             ),
           ),
         ),
-        InkWell(
-          child: Padding(
-            padding: EdgeInsets.only(top: 8.0, bottom: 20.0),
-            child: Text(
-              "REGÍSTRATE",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-              ),
+        FlatButton(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),
+            side: BorderSide(color: Theme.of(context).primaryColor),
+          ),
+          textColor: Theme.of(context).primaryColor,
+          child: Text(
+            "REGÍSTRATE",
+            style: TextStyle(
+              fontSize: 13.0,
             ),
           ),
-          onTap: () {
+          onPressed: () {
             Navigator.pushNamed(context, SignupPage().route);
           },
         ),
       ],
     );
   }
-//------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
 
 }

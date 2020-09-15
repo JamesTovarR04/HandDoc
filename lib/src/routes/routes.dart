@@ -7,6 +7,8 @@ import 'package:hand_doc/src/pages/report_symptoms_page.dart';
 import 'package:hand_doc/src/pages/signup_page.dart';
 import 'package:hand_doc/src/pages/start_screen.dart';
 import 'package:hand_doc/src/pages/triage_page.dart';
+import 'package:hand_doc/src/pages/welcome_page.dart';
+import 'package:hand_doc/src/pages/select_user.dart';
 
 Map<String, WidgetBuilder> getApplicationRoutes() {
   return <String, WidgetBuilder>{
@@ -18,5 +20,7 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     ReportSymptomsPage().route: (context) => ReportSymptomsPage(),
     TriagePage().route: (context) => TriagePage(),
     MedicinePage().route: (context) => MedicinePage(),
+    WelcomePage().route: (context) => WelcomePage(),
+    SelectUserPage().route: (context) => SelectUserPage(),
   };
 }

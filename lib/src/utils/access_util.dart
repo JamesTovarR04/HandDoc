@@ -4,72 +4,84 @@ import 'package:hand_doc/src/utils/DB_util.dart';
 
 class AccessUtil {
   // Connect user to system
-  static Future<int> loginUser(String email, String password) async {
-    User user = new User();
-    user.email = email;
-    user.password = password;
-
-    try {
-      if (await DBUtil.updateUserIf(user) == 1) return 1;
-    } catch (e) {
-      return 0;
-    }
-    return 0;
+  static Future<bool> loginUser(
+    String email,
+    String password,
+    bool save,
+  ) async {
+    return await DBUtil.loginUser(email, password, save);
   }
 
-  static Future<int> registerUser(User user) async {
+  static Future<bool> loginSavedUser(int idUser) async {
+    await DBUtil.updateUsers(
+      {'loggedIn': 0},
+      where: 'loggedIn = ?',
+      whereArgs: [1],
+    );
+
+    bool update = await DBUtil.updateUsers(
+      {'loggedIn': 1},
+      where: 'id = ? AND save = ?',
+      whereArgs: [idUser, 1],
+    );
+    return update;
+  }
+
+  static Future<bool> registerUser(User user) async {
     // Create user record and allow login
-    try {
-      await DBUtil.insertUser(user);
-    } catch (e) {
-      return 0;
-    }
-
-    return 1;
+    return await DBUtil.insertUser(user);
   }
 
+  /// * 0 - User LoggedIn.
+  /// * 1 - Users Saved.
+  /// * 2 - There are Users.
+  /// * 3 - No users.
   static Future<int> checkSession(BuildContext context) async {
-    var longitud = 0;
+    bool exitsDatabase = await DBUtil.databaseExists();
 
-    try {
-      await DBUtil.createBD;
-    } catch (e) {
-      print("Problemas para crear base de datos checkSession" + e.toString());
-    }
-    //--------------------------------------------------------------------------
+    if (!exitsDatabase) await DBUtil.createDB();
 
-    await DBUtil.readIf('user', 'loggedIn = 1').then((user) {
-      longitud = user.length;
-    });
+    int usersLogin = await DBUtil.countUsers('loggedIn = 1');
+    if (usersLogin > 0) return 0;
 
-    if (longitud != 0) return 1;
-    return 0;
+    int usersSaved = await DBUtil.countUsers('save = 1');
+    if (usersSaved > 0) return 1;
+
+    int users = await DBUtil.countUsers();
+    if (users > 0) return 2;
+
+    return 3;
   }
 
   // Check if user is registered
-  static bool checkIfRegistered(String personalIdentification) {
-    int registry = 0;
-    DBUtil.readIf('user', "personalIdentification = $personalIdentification")
-        .then((user) {
-      registry = user.length;
-    });
+  static Future<bool> checkIfRegistered(
+    String personalIdentification,
+    String email,
+  ) async {
+    int userExists = await DBUtil.countUsers(
+        'personalIdentification = $personalIdentification OR email = "$email"');
 
-    return registry == 1 ? true : false;
+    return userExists > 0;
   }
 
-  // Logged out user
+  /// Logged out user.
+  /// * 0 - Error in logout
+  /// * 1 - Logout but saved users
+  /// * 2 - Logout and not saved users
   static Future<int> logout() async {
-    List<User> userI = new List<User>();
-    try {
-      await DBUtil.readIf('user', 'loggedIn = 1').then((user) {
-        userI = user;
-        userI[0].loggedIn = 0;
-      });
-      await DBUtil.updateUser(userI[0]);
-      return 1;
-    } catch (e) {
-      print("Probelmas al salir" + e.toString());
-      return 0;
-    }
+    bool update = await DBUtil.updateUsers(
+      {
+        'loggedIn': 0,
+        'save': 0,
+      },
+      where: 'loggedIn = ?',
+      whereArgs: [1],
+    );
+    if (!update) return 0;
+
+    int usersSaved = await DBUtil.countUsers('save = 1');
+    if (usersSaved > 0) return 1;
+
+    return 2;
   }
 }

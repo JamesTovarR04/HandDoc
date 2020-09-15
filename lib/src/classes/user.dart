@@ -4,6 +4,7 @@ class User {
   String lastName;
   int personalIdentification;
   int loggedIn;
+  String genre;
   String phone;
   String email;
   String password;
@@ -11,6 +12,7 @@ class User {
   double height;
   double weight;
   int disease;
+  int save;
 
   User({
     this.id,
@@ -18,6 +20,7 @@ class User {
     this.lastName,
     this.personalIdentification,
     this.loggedIn,
+    this.genre,
     this.phone,
     this.email,
     this.password,
@@ -25,6 +28,7 @@ class User {
     this.height,
     this.weight,
     this.disease,
+    this.save,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -35,12 +39,14 @@ class User {
       personalIdentification: json['personalIdentification'],
       loggedIn: json['loggedIn'],
       phone: json['phone'],
+      genre: json['genre'],
       email: json['email'],
       password: json['password'],
       birthday: json['birthday'],
       height: json['height'],
       weight: json['weight'],
       disease: json['disease'],
+      save: json['save'],
     );
   }
 
@@ -51,6 +57,7 @@ class User {
       'lastName': lastName,
       'personalIdentification': personalIdentification,
       'loggedIn': loggedIn,
+      'genre': genre,
       'phone': phone,
       'email': email,
       'password': password,
@@ -58,6 +65,7 @@ class User {
       'height': height,
       'weight': weight,
       'disease': disease,
+      'save': save,
     };
   }
 }

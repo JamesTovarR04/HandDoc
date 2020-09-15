@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hand_doc/src/pages/home_page.dart';
-import 'package:flutter/services.dart';
 import 'package:hand_doc/src/pages/login_page.dart';
+import 'package:hand_doc/src/pages/welcome_page.dart';
+import 'package:hand_doc/src/pages/select_user.dart';
 import 'package:hand_doc/src/utils/access_util.dart';
+import 'package:flutter/services.dart';
 
 class StartScreen extends StatefulWidget {
   final route = '/';
@@ -22,13 +24,22 @@ class _StartScreenState extends State<StartScreen> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.initState();
 
-    // Verify if session was started before and create a Database
     AccessUtil.checkSession(context).then((value) {
-      if (value == 0)
-        route = LoginPage().route;
-      else
-        route = HomePage().route;
+      switch (value) {
+        case 0:
+          route = HomePage().route;
+          break;
+        case 1:
+          route = SelectUserPage().route;
+          break;
+        case 2:
+          route = LoginPage().route;
+          break;
+        default:
+          route = WelcomePage().route;
+      }
     });
+
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, route);
     });
@@ -52,7 +63,11 @@ class _StartScreenState extends State<StartScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/data/image/icon_white.png', height: 120.0),
+              Hero(
+                tag: 'logo',
+                child: Image.asset('assets/data/image/icon_white.png',
+                    height: 120.0),
+              ),
               Padding(
                 padding: EdgeInsets.only(top: 10.0),
                 child: Text(

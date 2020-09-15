@@ -4,6 +4,8 @@ class RegularExpression {
   RegExp _nameLastNameRegExp;
   RegExp _phoneRegExp;
   RegExp _personalIdentificationRegExp;
+  RegExp _weightRegExp;
+  RegExp _heightRegExp;
 
   RegularExpression() {
     _emailRegExp = new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
@@ -13,6 +15,9 @@ class RegularExpression {
 
     _phoneRegExp = new RegExp(r'^(\+57)?[ -]*(0|3)?([0-9]){10}$');
     _personalIdentificationRegExp = new RegExp(r'^[0-9]{6,10}$');
+
+    _weightRegExp = new RegExp(r'^([0-9]+(\.[0-9][0-9]?)?)$');
+    _heightRegExp = new RegExp(r'^([0-9]+(\.[0-9][0-9]?)?)$');
   }
 
   RegExp email() => this._emailRegExp;
@@ -20,4 +25,6 @@ class RegularExpression {
   RegExp name() => this._nameLastNameRegExp;
   RegExp phone() => this._phoneRegExp;
   RegExp identification() => this._personalIdentificationRegExp;
+  RegExp weight() => this._weightRegExp;
+  RegExp height() => this._heightRegExp;
 }

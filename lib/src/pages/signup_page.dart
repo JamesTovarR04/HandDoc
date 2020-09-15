@@ -66,6 +66,23 @@ class _SignupPageState extends State<SignupPage>
   bool _showPassword = false;
   bool _showPassword2 = false;
   bool _checkBoxVal = false;
+  bool _checkBoxSave = false;
+
+  String _genreSelected = 'Sexo';
+  static const genres = <String>[
+    'Sexo',
+    'Masculino',
+    'Femenino',
+  ];
+
+  final List<DropdownMenuItem<String>> _dropdownMenuItems = genres
+      .map(
+        (String value) => DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        ),
+      )
+      .toList();
   //----------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
@@ -115,7 +132,7 @@ class _SignupPageState extends State<SignupPage>
     return Form(
       key: _key,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,6 +145,9 @@ class _SignupPageState extends State<SignupPage>
             //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createPersonalIdentificationEdit(),
+            //------------------------------------------------------------------
+            SizedBox(height: 10.0),
+            _createSelectGenre(),
             //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createPhoneEdit(),
@@ -149,6 +169,7 @@ class _SignupPageState extends State<SignupPage>
             //------------------------------------------------------------------
             SizedBox(height: 10.0),
             _createPass2Edit(),
+            _savedSessionCheckBox(),
           ],
         ),
       ),
@@ -204,7 +225,7 @@ class _SignupPageState extends State<SignupPage>
   //------------------------------------------------------------------------------
   Widget _createPrivacyPolicies() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 50.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -224,7 +245,7 @@ class _SignupPageState extends State<SignupPage>
                 "He leído y aceptado los",
               ),
               Text(
-                "TÉRMINOS Y CONDICIONES",
+                "TÉRMINOS, CONDICIONES",
                 style: TextStyle(
                   color: Colors.deepOrange,
                   fontWeight: FontWeight.bold,
@@ -261,32 +282,37 @@ class _SignupPageState extends State<SignupPage>
           padding: const EdgeInsets.all(13.0),
           child: Text("REGÍSTRATE"),
         ),
-        onPressed: (this._checkBoxVal == false) &&
-                (_controllerPass2 != _controllerPass)
+        onPressed: ((this._checkBoxVal == false) &&
+                (_controllerPass2 != _controllerPass))
             ? null
             : () async {
-                FocusScope.of(context).requestFocus(new FocusNode());
-                _user.name = _controllerName.text;
-                _user.lastName = _controllerLastName.text;
-                _user.phone = _controllerPhone.text;
-                _user.personalIdentification =
-                    int.parse(_controllerPersonalIdentification.text);
-                _user.email = _controllerEmail.text;
-                _user.password = _controllerPass.text;
-                _user.birthday = _controllerBirthday.text;
-                _user.height = double.parse(_controllerHeight.text);
-                _user.weight = double.parse(_controllerWeight.text);
-
                 if (_key.currentState.validate()) {
                   _key.currentState.save();
+
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  _user.name = _controllerName.text;
+                  _user.lastName = _controllerLastName.text;
+                  _user.phone = _controllerPhone.text;
+                  _user.personalIdentification =
+                      int.parse(_controllerPersonalIdentification.text);
+                  _user.email = _controllerEmail.text;
+                  _user.genre = _genreSelected;
+                  _user.password = _controllerPass.text;
+                  _user.birthday = _controllerBirthday.text;
+                  _user.height = double.parse(_controllerHeight.text);
+                  _user.weight = double.parse(_controllerWeight.text);
+                  _user.save = (_checkBoxSave) ? 1 : 0;
+
                   //------------------------------------------------------------
-                  if (AccessUtil.checkIfRegistered(
-                      _controllerPersonalIdentification.text)) {
+                  if (await AccessUtil.checkIfRegistered(
+                    _controllerPersonalIdentification.text,
+                    _controllerEmail.text,
+                  )) {
                     setState(() {
                       message = "El usuario se encuentra registrado";
                     });
                   } else {
-                    if (await AccessUtil.registerUser(_user) == 1) {
+                    if (await AccessUtil.registerUser(_user)) {
                       Navigator.pushNamed(context, HomePage().route);
                     } else {
                       setState(() {
@@ -419,17 +445,67 @@ class _SignupPageState extends State<SignupPage>
   }
 
   //----------------------------------------------------------------------------
+
+  Widget _createSelectGenre() {
+    return DropdownButtonFormField<String>(
+      validator: (value) {
+        return (value.toString() == 'Sexo') ? 'Seleccione el sexo' : null;
+      },
+      decoration: InputDecoration(
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+        ),
+        labelText: "Sexo",
+        hintText: "Sexo",
+        prefixIcon: Icon(
+          Icons.wc,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+      isExpanded: true,
+      value: _genreSelected,
+      style: TextStyle(
+        color: Colors.grey,
+        fontSize: 20.0,
+      ),
+      iconEnabledColor: Theme.of(context).primaryColor,
+      icon: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: Icon(Icons.arrow_downward),
+      ),
+      iconSize: 24,
+      elevation: 16,
+      onChanged: (String newValue) {
+        setState(() {
+          _genreSelected = newValue;
+        });
+      },
+      items: this._dropdownMenuItems,
+    );
+  }
+
+  //----------------------------------------------------------------------------
   Widget _createWeightEdit() {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
-      /*validator: (text) {
+      validator: (text) {
         if (text.length == 0) {
           return "Este campo peso es requerido.";
-        } else if (!regExp.phone().hasMatch(text)) {
-          return "El formato para peso no es correcto.";
+        } else if (!(double.parse(text) > 0 && double.parse(text) < 500)) {
+          return "El valor del peso es incorrecto.";
         }
+        /*else if (!regExp.weight().hasMatch(text)) {
+          return "El formato para peso no es correcto.";
+        }*/
         return null;
-      },*/
+      },
       keyboardType: TextInputType.phone,
       controller: _controllerWeight,
       style: TextStyle(fontSize: 20.0),
@@ -450,7 +526,7 @@ class _SignupPageState extends State<SignupPage>
         hintText: "Escribe tu peso (Kg)",
         counterText: '',
         prefixIcon: Icon(
-          Icons.equalizer,
+          Icons.settings_input_svideo,
           color: Theme.of(context).primaryColor,
         ),
       ),
@@ -461,14 +537,17 @@ class _SignupPageState extends State<SignupPage>
   Widget _createHeightEdit() {
     return TextFormField(
       textCapitalization: TextCapitalization.words,
-      /*validator: (text) {
+      validator: (text) {
         if (text.length == 0) {
           return "Este campo altura es requerido.";
-        } else if (!regExp.phone().hasMatch(text)) {
+        } /*else if (!regExp.phone().hasMatch(text)) {
           return "El formato para altura no es correcto.";
+        }*/
+        else if (!(double.parse(text) > 0.30 && double.parse(text) < 2.20)) {
+          return "El valor de la altura es incorrecto.";
         }
         return null;
-      },*/
+      },
       keyboardType: TextInputType.phone,
       controller: _controllerHeight,
       style: TextStyle(fontSize: 20.0),
@@ -502,9 +581,9 @@ class _SignupPageState extends State<SignupPage>
       textCapitalization: TextCapitalization.words,
       validator: (text) {
         if (text.length == 0) {
-          return "Este campo #identificación es requerido.";
+          return "Este campo N° identificación es requerido.";
         } else if (!regExp.identification().hasMatch(text)) {
-          return "El formato para #identificación no es correcto.";
+          return "El formato para N° identificación no es correcto.";
         }
         return null;
       },
@@ -524,8 +603,8 @@ class _SignupPageState extends State<SignupPage>
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(35.0)),
         ),
-        labelText: "# Identificación",
-        hintText: "Escribe tu # Identificación",
+        labelText: "N° Identificación",
+        hintText: "Escribe tu N° Identificación",
         counterText: '',
         prefixIcon: Icon(
           Icons.camera_front,
@@ -618,6 +697,29 @@ class _SignupPageState extends State<SignupPage>
               setState(() => this._showPassword = !this._showPassword);
             }),
       ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  Widget _savedSessionCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Checkbox(
+          activeColor: Theme.of(context).primaryColor,
+          onChanged: (bool value) {
+            setState(() => this._checkBoxSave = value);
+          },
+          value: this._checkBoxSave,
+        ),
+        Text(
+          'Guardar en este dispositivo.',
+          style: TextStyle(
+            color: Colors.black54,
+            fontSize: 15.0,
+          ),
+        ),
+      ],
     );
   }
 

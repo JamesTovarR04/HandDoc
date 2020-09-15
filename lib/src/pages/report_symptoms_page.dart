@@ -51,9 +51,9 @@ class _ReportSymptomsPageState extends State<ReportSymptomsPage> {
       ];
       //------------------------------------------------------------------------
       DBUtil.readUser().then((user) {
-        if (user.length > 0)
+        if (user != null)
           setState(() {
-            _user = user[0];
+            _user = user;
           });
       });
     });
@@ -63,10 +63,9 @@ class _ReportSymptomsPageState extends State<ReportSymptomsPage> {
   @override
   Widget build(BuildContext context) {
     // Delete this code
-    Menu menu = new Menu(context);
     return Scaffold(
       drawer: Drawer(
-        child: menu.drawer,
+        child: Menu(),
       ),
       appBar: AppBar(
         title: Text("Síntomas"),

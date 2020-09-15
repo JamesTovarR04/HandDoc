@@ -81,9 +81,9 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
 
     DBUtil.readUser().then((user) {
-      if (user.length > 0)
+      if (user != null)
         setState(() {
-          _user = user[0];
+          _user = user;
           _controllerName.text = _user.name != null ? _user.name : "";
           _controllerLastName.text =
               _user.lastName != null ? _user.lastName : "";
@@ -103,9 +103,8 @@ class _ProfilePageState extends State<ProfilePage> {
   //----------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    Menu menu = new Menu(context);
     return Scaffold(
-      drawer: Drawer(child: menu.drawer),
+      drawer: Drawer(child: Menu()),
       appBar: AppBar(
         title: Text("Profile"),
         actions: [
@@ -414,14 +413,14 @@ class _ProfilePageState extends State<ProfilePage> {
             _user.height = double.parse(_controllerHeight.text);
             _user.weight = double.parse(_controllerWeight.text);
             try {
-              if (await DBUtil.updateUser(this._user) == 1) {
+              if (await DBUtil.updateUser(this._user)) {
                 _dialogo("Hecho con éxito", Icons.check_circle,
                     Theme.of(context).primaryColor);
               }
 
               await DBUtil.readUser().then((user) {
                 setState(() {
-                  _user = user[0];
+                  _user = user;
                   _controllerName.text = _user.name;
                   _controllerLastName.text = _user.lastName;
                   _controllerPhone.text = _user.phone;

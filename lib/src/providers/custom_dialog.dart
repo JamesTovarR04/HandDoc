@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomDialog extends StatelessWidget {
-  final String title, description, buttonText;
+  final String title, description, buttonText, routeRedirect;
   final Image image;
   final Color color;
   final urlImage;
@@ -11,6 +11,7 @@ class CustomDialog extends StatelessWidget {
     @required this.description,
     @required this.buttonText,
     this.color = Colors.grey,
+    this.routeRedirect,
     this.image,
     this.urlImage,
   });
@@ -79,6 +80,8 @@ class CustomDialog extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).pop(); // To close the dialog
+                    if (routeRedirect != null)
+                      Navigator.pushNamed(context, routeRedirect);
                   },
                   child: Text(
                     buttonText,

@@ -24,9 +24,9 @@ class _MedicinePageState extends State<MedicinePage> {
     _user.disease = 0;
 
     DBUtil.readUser().then((user) {
-      if (user.length > 0)
+      if (user != null)
         setState(() {
-          _user = user[0];
+          _user = user;
           _nameUser = _user.name[0] + _user.lastName[0];
         });
     });
@@ -74,9 +74,8 @@ class _MedicinePageState extends State<MedicinePage> {
   //----------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    Menu menu = new Menu(context);
     return Scaffold(
-      drawer: Drawer(child: menu.drawer),
+      drawer: Drawer(child: Menu()),
       appBar: AppBar(
         title: Text("Medicina"),
         actions: [
