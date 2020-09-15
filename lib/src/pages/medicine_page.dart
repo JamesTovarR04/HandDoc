@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hand_doc/src/classes/user.dart';
 import 'package:hand_doc/src/providers/menu_provider.dart';
 import 'package:hand_doc/src/utils/DB_util.dart';
+import 'package:hand_doc/src/providers/custom_dialog.dart';
 
 class MedicinePage extends StatefulWidget {
   final route = 'medicine/';
@@ -22,6 +24,7 @@ class _MedicinePageState extends State<MedicinePage> {
   void initState() {
     super.initState();
     _user.disease = 0;
+    Timer(Duration(seconds: 1), () => showAlert(context));
 
     DBUtil.readUser().then((user) {
       if (user != null)
@@ -104,24 +107,50 @@ class _MedicinePageState extends State<MedicinePage> {
       children: <Widget>[
         SizedBox(height: 20.0),
         _user.disease == 0 ? _createHealthy() : _createMedicalIf(),
-        SizedBox(height: 20.0),
-        Image.asset(
-          'assets/data/image/icon_green.png',
-          height: 150.0,
-        ),
+        SizedBox(height: 10.0),
         Padding(
-          padding: EdgeInsets.only(top: 5.0),
-          child: Text(
-            'Hospital Municipal De Algeciras',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 25.0,
-              fontWeight: FontWeight.bold,
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/data/image/icon_green.png',
+                height: 70.0,
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Text(
+                      "HandDoc",
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 25.0,
+                        fontFamily: 'CaviarDreams',
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 3.0,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 3.0,
+                        horizontal: 9.0,
+                      ),
+                      child: Text(
+                        'Hospital Municipal De Algeciras',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        SizedBox(height: 40.0),
+        SizedBox(height: 20.0),
       ],
     );
   }
@@ -176,6 +205,21 @@ class _MedicinePageState extends State<MedicinePage> {
   }
 
   //----------------------------------------------------------------------------
+  void showAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CustomDialog(
+        title: 'Antes de continuar',
+        description:
+            "Recuerda que esta app es informativa, el diagnóstico presentado se basa en las enfermedades más comunes de tu región. Por favor consulta a tu médico si realmente te encuentras enfermo.",
+        buttonText: "Aceptar",
+        color: Theme.of(context).primaryColor,
+        urlImage: 'assets/data/image/medicamentos.png',
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
   Widget _createCard() {
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -222,7 +266,7 @@ class _MedicinePageState extends State<MedicinePage> {
                 " medicamentos:",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
           ),

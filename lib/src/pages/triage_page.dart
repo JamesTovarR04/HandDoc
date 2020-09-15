@@ -9,8 +9,6 @@ class TriagePage extends StatefulWidget {
   _TriagePageState createState() => _TriagePageState();
 }
 
-enum Answers { YES, NO, MAYBE }
-
 class _TriagePageState extends State<TriagePage> {
   int _currentStep = 0;
 

@@ -3,6 +3,7 @@ import 'package:hand_doc/src/classes/user.dart';
 import 'package:hand_doc/src/providers/custom_dialog.dart';
 import 'package:hand_doc/src/providers/menu_provider.dart';
 import 'package:hand_doc/src/utils/DB_util.dart';
+import 'package:hand_doc/src/pages/medicine_page.dart';
 
 class ReportSymptomsPage extends StatefulWidget {
   final route = 'report/';
@@ -96,16 +97,17 @@ class _ReportSymptomsPageState extends State<ReportSymptomsPage> {
           });
 
           try {
-            if (await DBUtil.updateUser(_user) == 1) {
+            if (await DBUtil.updateUser(_user)) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) => CustomDialog(
                   title: '¡Recibido el reporte!',
                   description:
-                      "Se ha recibido tu diagnóstico, de inmediato te vamos a redirijir a la pantalla donde podrás observar la formulación médica recomendada.",
+                      "Se ha recibido el reporte de sintomas, a continuación te presentaremos un posible diagnostico de la enfermedad y su fórmula medica recomendada.",
                   buttonText: "Aceptar",
                   color: Theme.of(context).primaryColor,
                   urlImage: 'assets/data/image/medicamentos.png',
+                  routeRedirect: MedicinePage().route,
                 ),
               );
             }
