@@ -55,6 +55,14 @@ class _HomePageState extends State<HomePage> {
     return Stack(
       children: <Widget>[
         Container(
+          decoration: new BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/data/image/doctors.png'),
+              alignment: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+        Container(
           height: 100,
           child: RotatedBox(
             quarterTurns: 2,
@@ -110,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           _createButtonEmergency(),
           SizedBox(height: 15.0),
           _createButtonReportSymptoms(),
-          SizedBox(height: 15.0),
+          SizedBox(height: 30.0),
         ],
       ),
     );
