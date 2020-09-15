@@ -28,6 +28,11 @@ class AccessUtil {
   }
 
   static Future<bool> registerUser(User user) async {
+    await DBUtil.updateUsers(
+      {'loggedIn': 0},
+      where: 'loggedIn = ?',
+      whereArgs: [1],
+    );
     // Create user record and allow login
     return await DBUtil.insertUser(user);
   }
